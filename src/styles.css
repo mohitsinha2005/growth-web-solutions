@@ -36,29 +36,29 @@
 
 :root {
   --radius: 0.875rem;
-  --background: oklch(0.16 0.03 250);
+  --background: oklch(0.15 0.035 258);
   --foreground: oklch(0.96 0.01 240);
   --surface: oklch(0.2 0.035 250);
   --card: oklch(0.21 0.035 250);
   --card-foreground: oklch(0.96 0.01 240);
   --popover: oklch(0.21 0.035 250);
   --popover-foreground: oklch(0.96 0.01 240);
-  --primary: oklch(0.88 0.2 128);
-  --primary-foreground: oklch(0.18 0.03 250);
+  --primary: oklch(0.64 0.19 255);
+  --primary-foreground: oklch(0.99 0 0);
   --secondary: oklch(0.26 0.04 250);
   --secondary-foreground: oklch(0.96 0.01 240);
   --muted: oklch(0.26 0.04 250);
   --muted-foreground: oklch(0.72 0.03 245);
-  --accent: oklch(0.78 0.13 190);
+  --accent: oklch(0.8 0.13 210);
   --accent-foreground: oklch(0.18 0.03 250);
   --destructive: oklch(0.65 0.22 25);
   --destructive-foreground: oklch(0.98 0 0);
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 14%);
-  --ring: oklch(0.88 0.2 128);
-  --gradient-glow: radial-gradient(60% 60% at 70% 20%, oklch(0.88 0.2 128 / 0.18), transparent 70%),
-    radial-gradient(50% 50% at 10% 80%, oklch(0.78 0.13 190 / 0.15), transparent 70%);
-  --gradient-text: linear-gradient(90deg, oklch(0.88 0.2 128), oklch(0.78 0.13 190));
+  --ring: oklch(0.64 0.19 255);
+  --gradient-glow: radial-gradient(60% 60% at 70% 20%, oklch(0.64 0.19 255 / 0.22), transparent 70%),
+    radial-gradient(50% 50% at 10% 80%, oklch(0.8 0.13 210 / 0.15), transparent 70%);
+  --gradient-text: linear-gradient(90deg, oklch(0.7 0.17 255), oklch(0.85 0.12 205));
 }
 
 @layer base {
@@ -95,5 +95,5 @@
 @utility card-lift {
   border: 1px solid var(--border); background: var(--card); border-radius: var(--radius-xl);
   transition: transform .25s, border-color .25s;
-  &:hover { transform: translateY(-4px); border-color: oklch(0.88 0.2 128 / 0.5); }
+  &:hover { transform: translateY(-4px); border-color: oklch(0.64 0.19 255 / 0.6); }
 }
