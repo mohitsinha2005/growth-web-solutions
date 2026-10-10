@@ -1,5 +1,4 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Background3D } from "@/components/Background3D";
 import { CTA, services } from "@/components/site";
 
 export const Route = createFileRoute("/")({
@@ -26,7 +25,6 @@ function Index() {
   return (
     <>
       <section className="bg-glow relative isolate overflow-hidden">
-        <Background3D />
         <div className="mx-auto grid max-w-6xl items-center gap-12 px-6 py-20 md:py-36">
           <div className="max-w-2xl">
             <span className="rounded-full border border-border px-3 py-1 text-xs text-accent">IT services for businesses worldwide</span>
@@ -44,7 +42,7 @@ function Index() {
         </div>
       </section>
 
-      <section className="border-y border-border bg-surface">
+      <section className="border-y border-border bg-surface/70 backdrop-blur">
         <div className="mx-auto grid max-w-6xl grid-cols-2 gap-6 px-6 py-10 md:grid-cols-4">
           {stats.map(([n, l]) => (
             <div key={l}><p className="font-display text-3xl font-bold text-primary">{n}</p><p className="text-sm text-muted-foreground">{l}</p></div>

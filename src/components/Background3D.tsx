@@ -6,7 +6,7 @@ export function Background3D() {
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
   return (
-    <div className="absolute inset-0 -z-10" aria-hidden>
+    <div className="pointer-events-none fixed inset-0 -z-10" aria-hidden>
       {mounted && (
         <Suspense fallback={null}>
           <Scene3D />

@@ -13,6 +13,9 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Header, Footer } from "@/components/site";
+import { Background3D } from "@/components/Background3D";
+import { Motion3D } from "@/components/Motion3D";
+import { VoiceBot } from "@/components/VoiceBot";
 
 function NotFoundComponent() {
   return (
@@ -116,9 +119,12 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <Background3D />
       <Header />
       <main><Outlet /></main>
       <Footer />
+      <Motion3D />
+      <VoiceBot />
     </QueryClientProvider>
   );
 }
