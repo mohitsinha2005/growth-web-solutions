@@ -20,7 +20,7 @@ function Contact() {
   return (
     <section className="bg-glow mx-auto grid max-w-6xl gap-12 px-6 py-20 md:grid-cols-2">
       <div>
-        <h1 className="text-4xl font-bold md:text-6xl">Let's <span className="text-gradient">talk</span></h1>
+        <h1 className="hero-3d text-4xl font-bold md:text-6xl">Let's <span className="text-gradient">talk</span></h1>
         <p className="mt-4 text-lg text-muted-foreground">Share your goals and we'll send a free plan and quote within 24 hours.</p>
         <ul className="mt-8 space-y-4">
           <li><p className="text-sm text-muted-foreground">Email</p><p className="font-semibold">hello@brightlane.digital</p></li>

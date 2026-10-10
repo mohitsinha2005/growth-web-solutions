@@ -24,7 +24,7 @@ function About() {
   return (
     <>
       <section className="bg-glow mx-auto max-w-6xl px-6 py-20">
-        <h1 className="text-4xl font-bold md:text-6xl">Built to help <span className="text-gradient">businesses grow</span></h1>
+        <h1 className="hero-3d text-4xl font-bold md:text-6xl">Built to help <span className="text-gradient">businesses grow</span></h1>
         <p className="mt-6 max-w-3xl text-lg text-muted-foreground">
           We're a new-generation IT startup with one mission: give every business — small or large, anywhere in the world —
           the technology, marketing and data it needs to compete and win online.

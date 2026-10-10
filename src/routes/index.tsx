@@ -28,7 +28,7 @@ function Index() {
         <div className="mx-auto grid max-w-6xl items-center gap-12 px-6 py-20 md:py-36">
           <div className="max-w-2xl">
             <span className="rounded-full border border-border px-3 py-1 text-xs text-accent">IT services for businesses worldwide</span>
-            <h1 className="mt-6 text-4xl font-bold leading-tight md:text-6xl">
+            <h1 className="hero-3d mt-6 text-4xl font-bold leading-tight md:text-6xl">
               We build, market & measure your <span className="text-gradient">business growth</span>
             </h1>
             <p className="mt-6 max-w-lg text-lg text-muted-foreground">
@@ -52,15 +52,16 @@ function Index() {
 
       <section className="mx-auto max-w-6xl px-6 py-20">
         <h2 className="text-3xl font-bold md:text-4xl">Everything you need to grow online</h2>
-        <div className="mt-10 grid gap-6 md:grid-cols-2">
-          {services.map((s) => (
+        <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {services.slice(0, 6).map((s) => (
             <div key={s.title} className="card-lift p-8">
-              <span className="text-3xl">{s.icon}</span>
+              <span className="icon-3d"><s.icon size={26} /></span>
               <h3 className="mt-4 text-xl font-semibold">{s.title}</h3>
               <p className="mt-2 text-muted-foreground">{s.text}</p>
             </div>
           ))}
         </div>
+        <Link to="/services" className="btn-ghost mt-8">View all 12 services →</Link>
       </section>
 
       <section className="mx-auto max-w-6xl px-6 pb-10">

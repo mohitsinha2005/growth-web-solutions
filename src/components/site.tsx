@@ -7,6 +7,7 @@ export const BRAND = "Brightlane Digital";
 const nav = [
   { to: "/", label: "Home" },
   { to: "/services", label: "Services" },
+  { to: "/start", label: "Get Started" },
   { to: "/about", label: "About" },
   { to: "/contact", label: "Contact" },
 ] as const;
@@ -88,9 +89,4 @@ export function CTA() {
   );
 }
 
-export const services = [
-  { icon: "🌐", title: "Website Development", text: "Fast, modern, mobile-friendly websites and online stores built to turn visitors into customers.", points: ["Business & corporate sites", "E-commerce stores", "Landing pages", "Web apps & dashboards"] },
-  { icon: "📈", title: "Digital Marketing", text: "Get found and get chosen with SEO, social media and paid ads that bring real leads.", points: ["SEO & local SEO", "Google & Meta ads", "Social media management", "Content & email marketing"] },
-  { icon: "📊", title: "Data Analytics", text: "Understand your customers and sales with clear reports and dashboards you can act on.", points: ["Analytics setup & tracking", "Sales & marketing dashboards", "Customer insights", "Monthly growth reports"] },
-  { icon: "🛠️", title: "IT Support & Maintenance", text: "We keep your website secure, updated and running smoothly so you can focus on business.", points: ["Hosting & domains", "Security & backups", "Speed optimization", "Ongoing updates"] },
-];
+export { services } from "@/components/services-data";
