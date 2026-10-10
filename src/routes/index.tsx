@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import hero from "@/assets/hero.jpg";
+import { Background3D } from "@/components/Background3D";
 import { CTA, services } from "@/components/site";
 
 export const Route = createFileRoute("/")({
@@ -25,9 +25,10 @@ const steps = [
 function Index() {
   return (
     <>
-      <section className="bg-glow relative overflow-hidden">
-        <div className="mx-auto grid max-w-6xl items-center gap-12 px-6 py-20 md:grid-cols-2 md:py-28">
-          <div>
+      <section className="bg-glow relative isolate overflow-hidden">
+        <Background3D />
+        <div className="mx-auto grid max-w-6xl items-center gap-12 px-6 py-20 md:py-36">
+          <div className="max-w-2xl">
             <span className="rounded-full border border-border px-3 py-1 text-xs text-accent">IT services for businesses worldwide</span>
             <h1 className="mt-6 text-4xl font-bold leading-tight md:text-6xl">
               We build, market & measure your <span className="text-gradient">business growth</span>
@@ -40,7 +41,6 @@ function Index() {
               <Link to="/services" className="btn-ghost">Our services</Link>
             </div>
           </div>
-          <img src={hero} alt="Global network and growth chart" width={1600} height={1008} className="rounded-3xl border border-border" />
         </div>
       </section>
 
