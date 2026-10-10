@@ -7,7 +7,7 @@ type Msg = { role: "user" | "assistant"; content: string };
 
 const GREETING: Msg = {
   role: "assistant",
-  content: "Hi, I'm Nova from Brightlane Digital 👋 How can I help grow your business today? Type below or tap the mic to talk.",
+  content: "Hi, I'm Nova from Brightlane Digital How can I help grow your business today? Type below or tap the mic to talk.",
 };
 const QUICK = ["I need a website", "How can you get me more customers?", "What is data analytics?"];
 

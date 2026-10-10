@@ -16,7 +16,7 @@ export function Background3D() {
       const sy = Math.min(window.scrollY, 2000) * 0.04;
       if (layer.current) {
         layer.current.style.transform =
-          `perspective(1200px) rotateY(${cx * 6}deg) rotateX(${-cy * 4}deg) translate3d(${-cx * 30}px, ${-cy * 20 - sy}px, 0) scale(1.15)`;
+          `perspective(1200px) rotateY(${cx * 6}deg) rotateX(${-cy * 4}deg) translate3d(${-cx * 30}px, ${-cy * 20 - sy}px, 0) scale(1.25)`;
       }
       raf = requestAnimationFrame(tick);
     };
