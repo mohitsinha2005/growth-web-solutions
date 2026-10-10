@@ -107,3 +107,17 @@
 .orb-live { animation: orb 1.6s ease-in-out infinite; }
 @keyframes orb { 50% { transform: scale(1.15); box-shadow: 0 0 30px var(--primary); } }
 @media (prefers-reduced-motion: reduce) { .reveal-3d { opacity: 1; transform: none; } .ai-fab, .orb-live { animation: none; } }
+
+.bg-zoom { animation: bg-zoom 30s ease-in-out infinite alternate; }
+@keyframes bg-zoom { from { scale: 1; } to { scale: 1.08; } }
+.bg-overlay { background: linear-gradient(90deg, oklch(0.13 0.035 258 / 0.92) 0%, oklch(0.13 0.035 258 / 0.7) 45%, oklch(0.13 0.035 258 / 0.35) 100%), linear-gradient(0deg, oklch(0.13 0.035 258 / 0.85), transparent 40%); }
+.bg-gridlines { background-image: linear-gradient(oklch(0.64 0.19 255 / 0.06) 1px, transparent 1px), linear-gradient(90deg, oklch(0.64 0.19 255 / 0.06) 1px, transparent 1px); background-size: 64px 64px; mask-image: radial-gradient(ellipse at 70% 30%, black, transparent 75%); animation: grid-drift 20s linear infinite; }
+@keyframes grid-drift { to { background-position: 64px 64px; } }
+.chat-panel { animation: panel-in .35s cubic-bezier(.2,.8,.2,1); transform-origin: bottom right; }
+@keyframes panel-in { from { opacity: 0; transform: perspective(900px) rotateX(12deg) translateY(20px) scale(.95); } }
+.typing { display: inline-flex; gap: 4px; } .typing i { width: 6px; height: 6px; border-radius: 9999px; background: var(--muted-foreground); animation: typing 1s infinite; } .typing i:nth-child(2) { animation-delay: .15s } .typing i:nth-child(3) { animation-delay: .3s }
+@keyframes typing { 50% { opacity: .2; transform: translateY(-3px); } }
+.mic-live { background: var(--destructive); color: var(--destructive-foreground); animation: orb 1.4s infinite; }
+.float-y { animation: float-y 6s ease-in-out infinite; }
+@keyframes float-y { 50% { transform: translateY(-12px); } }
+@media (prefers-reduced-motion: reduce) { .bg-zoom, .bg-gridlines, .chat-panel, .float-y { animation: none; } }
