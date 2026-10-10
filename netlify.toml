@@ -1,0 +1,5 @@
+[build]
+  command = "bun run build"
+  # Nitro's Netlify preset writes static assets to dist/ and the SSR
+  # server to .netlify/functions-internal (deployed as a Netlify Function).
+  publish = "dist"
