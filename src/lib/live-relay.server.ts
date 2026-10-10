@@ -12,7 +12,7 @@ export type LiveConfig = {
 };
 
 // Fill from co-loaded knowledge: the gateway URL, the Live model and the resolved chat model.
-const liveSettings = { baseURL: "", liveModel: "", backendModel: "" };
+const liveSettings = { baseURL: "https://ai.gateway.lovable.dev/v1", liveModel: "openai/gpt-live-1", backendModel: "openai/gpt-6-astra" };
 
 export type LiveSocket = {
   readonly readyState: number;
@@ -111,34 +111,29 @@ export function handleLiveRequest(request: Request): Response {
   return new Response(null, response);
 }
 
-const conversationInstructions = `You are Mira, a calm learning companion.
-Speak naturally in brief replies. Ask a focused question when details are unclear.
-Backchannel policy: Use moderate listening sounds without taking over.
-Interruption policy: Stop your answer and listen when the user interrupts.
+const conversationInstructions = `You are Nova, the friendly voice assistant for Brightlane Digital, an IT services company that serves businesses in every country.
+Services: website development (business sites, e-commerce, landing pages, web apps), digital marketing (SEO, Google and Meta ads, social media, content and email), data analytics (tracking setup, dashboards, customer insights, monthly reports) and IT support (hosting, security, backups, speed, updates).
+Speak naturally in short, professional replies. Reply in the language the visitor uses.
+Help visitors understand which service fits their business, and invite them to request a free quote on the Contact page. Never invent prices; say the team sends a custom quote within 24 hours.
+Backchannel policy: Use light listening sounds only.
+Interruption policy: Stop speaking and listen when the visitor interrupts.
 Delegation policy:
-Backend tools: Reason through questions and plan study sessions across days.
-Delegate to the backend when: The user wants a study schedule or careful reasoning,
-or a correction changes a question already being worked on.
-Do not delegate to the backend when: Greeting, clarifying a question, or repeating
-a still-current answer. Wait for the backend result before presenting its answer.`;
+Backend tools: Recommend services for a business goal.
+Delegate to the backend when: The visitor describes their business and goals and wants a recommendation.
+Do not delegate to the backend when: Greeting, simple questions about services, or clarifying.
+Wait for the backend result before presenting its answer.`;
 
-const studyScheduleInput = z
-  .object({
-    total_minutes: z.number().int().min(1).max(10_080),
-    days: z.number().int().min(1).max(30),
-  })
-  .strict();
+const recommendInput = z.object({ goal: z.string() }).strict();
 
-function planStudySchedule(args: z.infer<typeof studyScheduleInput>) {
-  const daily = Math.floor(args.total_minutes / args.days);
-  return {
-    total_minutes: args.total_minutes,
-    days: args.days,
-    sessions: Array.from({ length: args.days }, (_, index) => ({
-      day: index + 1,
-      minutes: daily + (index < args.total_minutes % args.days ? 1 : 0),
-    })),
-  };
+function planStudySchedule(args: z.infer<typeof recommendInput>) {
+  const g = args.goal.toLowerCase();
+  const picks: string[] = [];
+  if (/site|web|store|shop|online|app/.test(g)) picks.push("Website Development");
+  if (/lead|customer|seo|ads|social|market|traffic|sales/.test(g)) picks.push("Digital Marketing");
+  if (/data|report|insight|dashboard|analy|track/.test(g)) picks.push("Data Analytics");
+  if (/secur|host|maint|slow|support|update/.test(g)) picks.push("IT Support & Maintenance");
+  if (!picks.length) picks.push("Website Development", "Digital Marketing");
+  return { goal: args.goal, recommended: picks, next_step: "Request a free quote on the Contact page" };
 }
 
 function isListeningSound(text: string) {
@@ -200,18 +195,16 @@ async function answerQuestion(
       },
     },
     system:
-      "Help a spoken learning companion answer the latest user question. " +
+      "Help the Brightlane Digital voice assistant answer a website visitor. " +
       "Transcripts may be incomplete or corrected. Use the latest correction. " +
       "Continue from completed tool results; do not repeat completed actions. " +
-      "Return verified facts and useful next steps in at most 150 words. " +
-      "To display a study schedule for the current request, call plan_study_schedule with its total minutes and days. " +
-      "Ask for missing details instead of guessing. The tool only calculates a draft plan; " +
-      "it does not save calendar events. You have no other tools.",
+      "Answer in at most 80 words. Call recommend_services with the visitor's business goal to pick services. " +
+      "Never invent prices. You have no other tools.",
     messages,
     tools: {
-      plan_study_schedule: tool({
-        description: "Distribute a total study time evenly across days and return a draft schedule.",
-        inputSchema: studyScheduleInput,
+      recommend_services: tool({
+        description: "Recommend Brightlane Digital services for a visitor's business goal.",
+        inputSchema: recommendInput,
         execute: async (args) => {
           signal.throwIfAborted();
           const plan = planStudySchedule(args);
@@ -331,7 +324,7 @@ export function bindLiveConnection(
   function requestGreeting() {
     const content = (
       config.openingInstructions ??
-      "Start the conversation now in your configured language and role. Give a brief greeting suited to this app's purpose, ask one relevant opening question, then listen."
+      "Greet the visitor in one short sentence as Nova from Brightlane Digital, ask how you can help grow their business, then listen."
     ).trim();
     if (!content || !browserReady || !sessionID || greetingRequested || closing) return;
     greetingRequested = true;
