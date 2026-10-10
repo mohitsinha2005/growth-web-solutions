@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useLiveVoice, type LiveEvent } from "@/hooks/use-live-voice";
 import logo from "@/assets/logo.png";
+import ReactMarkdown from "react-markdown";
 
 type Msg = { role: "user" | "assistant"; content: string };
 
@@ -62,7 +63,7 @@ export function VoiceBot() {
         const { done, value } = await reader.read();
         if (done) break;
         const chunk = dec.decode(value, { stream: true });
-        setMsgs((p) => [...p.slice(0, -1), { role: "assistant", content: p[p.length - 1].content + chunk }]);
+        setMsgs((p) => [...p.slice(0, -1), { role: "assistant", content: (p[p.length - 1]?.content ?? "") + chunk }]);
       }
     } catch (e) {
       setMsgs((p) => (p[p.length - 1]?.content === "" ? p.slice(0, -1) : p));
@@ -96,11 +97,13 @@ export function VoiceBot() {
           <div className="flex-1 space-y-3 overflow-y-auto p-4 text-sm">
             {msgs.map((m, i) => (
               <div key={i} className={m.role === "user" ? "flex justify-end" : "flex"}>
-                <p className={m.role === "user"
-                  ? "max-w-[85%] whitespace-pre-wrap rounded-2xl rounded-br-sm bg-primary px-3.5 py-2 text-primary-foreground"
-                  : "max-w-[90%] whitespace-pre-wrap leading-relaxed"}>
-                  {m.content || <span className="typing"><i /><i /><i /></span>}
-                </p>
+                {m.role === "user" ? (
+                  <p className="max-w-[85%] whitespace-pre-wrap rounded-2xl rounded-br-sm bg-primary px-3.5 py-2 text-primary-foreground">{m.content}</p>
+                ) : (
+                  <div className="chat-md max-w-[92%] leading-relaxed">
+                    {m.content ? <ReactMarkdown>{m.content}</ReactMarkdown> : <span className="typing"><i /><i /><i /></span>}
+                  </div>
+                )}
               </div>
             ))}
             {msgs.length === 1 && (

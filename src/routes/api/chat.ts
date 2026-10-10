@@ -21,7 +21,7 @@ export const Route = createFileRoute("/api/chat")({
       POST: async ({ request }) => {
         const parsed = Body.safeParse(await request.json().catch(() => null));
         if (!parsed.success) return Response.json({ error: "Invalid request" }, { status: 400 });
-        const key = process.env.LOVABLE_API_KEY;
+        const key = process.env['LOVABLE_API_KEY'];
         if (!key) return Response.json({ error: "AI is not configured" }, { status: 500 });
         const provider = createOpenAI({
           baseURL: "https://ai.gateway.lovable.dev/v1",
