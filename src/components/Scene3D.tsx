@@ -51,7 +51,7 @@ function Stars() {
 
 export default function Scene3D() {
   return (
-    <Canvas eventSource={typeof document !== "undefined" ? document.body : undefined} camera={{ position: [0, 0, 7], fov: 55 }} dpr={[1, 1.75]}>
+    <Canvas eventSource={document.body} camera={{ position: [0, 0, 7], fov: 55 }} dpr={[1, 1.75]}>
       <ambientLight intensity={0.4} />
       <pointLight position={[5, 5, 5]} intensity={40} color="#60a5fa" />
       <pointLight position={[-5, -3, 2]} intensity={20} color="#22d3ee" />
