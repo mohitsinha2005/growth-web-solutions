@@ -93,7 +93,17 @@
   &:hover { background: var(--secondary); }
 }
 @utility card-lift {
-  border: 1px solid var(--border); background: var(--card); border-radius: var(--radius-xl);
-  transition: transform .25s, border-color .25s;
-  &:hover { transform: translateY(-4px); border-color: oklch(0.64 0.19 255 / 0.6); }
+  border: 1px solid var(--border); background: color-mix(in oklab, var(--card) 70%, transparent);
+  backdrop-filter: blur(12px); border-radius: var(--radius-xl);
+  transition: transform .2s ease-out, border-color .25s, box-shadow .25s; transform-style: preserve-3d;
+  &:hover { border-color: oklch(0.64 0.19 255 / 0.6); box-shadow: 0 30px 60px -30px oklch(0.64 0.19 255 / 0.6); }
 }
+
+.reveal-3d { opacity: 0; transform: perspective(1200px) rotateX(14deg) translateY(40px); transition: opacity .9s ease, transform .9s cubic-bezier(.2,.7,.2,1); }
+.reveal-3d.in-view { opacity: 1; transform: none; }
+.ai-fab { box-shadow: 0 0 0 0 oklch(0.64 0.19 255 / 0.6); animation: fab-pulse 2.4s infinite; }
+@keyframes fab-pulse { 70% { box-shadow: 0 0 0 18px oklch(0.64 0.19 255 / 0); } 100% { box-shadow: 0 0 0 0 oklch(0.64 0.19 255 / 0); } }
+.orb { width: 2.5rem; height: 2.5rem; border-radius: 9999px; background: radial-gradient(circle at 30% 30%, var(--accent), var(--primary)); }
+.orb-live { animation: orb 1.6s ease-in-out infinite; }
+@keyframes orb { 50% { transform: scale(1.15); box-shadow: 0 0 30px var(--primary); } }
+@media (prefers-reduced-motion: reduce) { .reveal-3d { opacity: 1; transform: none; } .ai-fab, .orb-live { animation: none; } }

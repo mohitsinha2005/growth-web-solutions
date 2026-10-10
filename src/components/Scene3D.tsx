@@ -11,7 +11,7 @@ function Globe() {
     ref.current.rotation.x = THREE.MathUtils.lerp(ref.current.rotation.x, s.pointer.y * 0.3, 0.05);
   });
   return (
-    <group ref={ref} position={[2.2, 0, 0]}>
+    <group ref={ref} position={[2.6, 0, -1]}>
       <mesh>
         <icosahedronGeometry args={[1.8, 3]} />
         <meshBasicMaterial color="#3b82f6" wireframe transparent opacity={0.35} />
@@ -51,7 +51,7 @@ function Stars() {
 
 export default function Scene3D() {
   return (
-    <Canvas camera={{ position: [0, 0, 7], fov: 55 }} dpr={[1, 1.75]}>
+    <Canvas eventSource={document.body} camera={{ position: [0, 0, 7], fov: 55 }} dpr={[1, 1.75]}>
       <ambientLight intensity={0.4} />
       <pointLight position={[5, 5, 5]} intensity={40} color="#60a5fa" />
       <pointLight position={[-5, -3, 2]} intensity={20} color="#22d3ee" />
