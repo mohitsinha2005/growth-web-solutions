@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
+import logo from "@/assets/logo.png";
 
 export const BRAND = "Brightlane Digital";
 
@@ -16,7 +17,7 @@ export function Header() {
     <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
         <Link to="/" className="flex items-center gap-2 font-display text-lg font-bold">
-          <span className="grid h-8 w-8 place-items-center rounded-lg bg-primary text-primary-foreground">B</span>
+          <img src={logo} alt="Brightlane Digital logo" width={36} height={36} className="h-9 w-9" />
           {BRAND}
         </Link>
         <nav className="hidden items-center gap-8 md:flex">
@@ -46,7 +47,7 @@ export function Footer() {
     <footer className="border-t border-border bg-surface/80 backdrop-blur">
       <div className="mx-auto grid max-w-6xl gap-10 px-6 py-14 md:grid-cols-4">
         <div className="md:col-span-2">
-          <p className="font-display text-xl font-bold">{BRAND}</p>
+          <p className="flex items-center gap-2 font-display text-xl font-bold"><img src={logo} alt="" width={32} height={32} loading="lazy" className="h-8 w-8" />{BRAND}</p>
           <p className="mt-3 max-w-sm text-sm text-muted-foreground">
             Websites, digital marketing and data analytics for growing businesses in every country.
           </p>
