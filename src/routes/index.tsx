@@ -28,7 +28,7 @@ function Index() {
       <section className="bg-glow relative isolate overflow-hidden">
         <Background3D />
         <div className="mx-auto grid max-w-6xl items-center gap-12 px-6 py-20 md:py-36">
-          <div>
+          <div className="max-w-2xl">
             <span className="rounded-full border border-border px-3 py-1 text-xs text-accent">IT services for businesses worldwide</span>
             <h1 className="mt-6 text-4xl font-bold leading-tight md:text-6xl">
               We build, market & measure your <span className="text-gradient">business growth</span>
