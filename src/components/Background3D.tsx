@@ -6,25 +6,43 @@ export function Background3D() {
   const layer = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    let mx = 0, my = 0, cx = 0, cy = 0, raf = 0;
+    let mx = 0, my = 0, cx = 0, cy = 0, scroll = window.scrollY, smoothScroll = scroll, raf = 0;
+    const schedule = () => {
+      if (!raf && !document.hidden) raf = requestAnimationFrame(tick);
+    };
     const onMove = (e: PointerEvent) => {
       if (e.pointerType !== "mouse") return;
       mx = e.clientX / window.innerWidth - 0.5;
       my = e.clientY / window.innerHeight - 0.5;
+      schedule();
     };
     const tick = () => {
-      cx += (mx - cx) * 0.06;
-      cy += (my - cy) * 0.06;
-      const sy = Math.min(window.scrollY, 2000) * 0.015;
+      raf = 0;
+      cx += (mx - cx) * 0.1;
+      cy += (my - cy) * 0.1;
+      smoothScroll += (scroll - smoothScroll) * 0.1;
+      const sy = Math.min(smoothScroll, 2000) * 0.015;
       if (layer.current) {
         layer.current.style.transform =
           `perspective(1600px) rotateY(${cx * 3}deg) rotateX(${-cy * 2}deg) translate3d(${-cx * 18}px, ${-cy * 12 - sy}px, 0) scale(1.12)`;
       }
-      raf = requestAnimationFrame(tick);
+      if (Math.abs(mx - cx) + Math.abs(my - cy) > 0.001 || Math.abs(scroll - smoothScroll) > 0.1) schedule();
     };
-    window.addEventListener("pointermove", onMove);
-    raf = requestAnimationFrame(tick);
-    return () => { window.removeEventListener("pointermove", onMove); cancelAnimationFrame(raf); };
+    const onScroll = () => { scroll = window.scrollY; schedule(); };
+    const onVisibility = () => {
+      if (document.hidden) { cancelAnimationFrame(raf); raf = 0; }
+      else schedule();
+    };
+    window.addEventListener("pointermove", onMove, { passive: true });
+    window.addEventListener("scroll", onScroll, { passive: true });
+    document.addEventListener("visibilitychange", onVisibility);
+    schedule();
+    return () => {
+      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("scroll", onScroll);
+      document.removeEventListener("visibilitychange", onVisibility);
+      cancelAnimationFrame(raf);
+    };
   }, []);
   return (
     <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden" aria-hidden>
