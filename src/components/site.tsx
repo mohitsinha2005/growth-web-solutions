@@ -1,6 +1,8 @@
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
 import logo from "@/assets/logo.png";
+import { Menu, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export const BRAND = "Brightlane Digital";
 
@@ -17,11 +19,11 @@ export function Header() {
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-        <Link to="/" className="flex items-center gap-2 font-display text-lg font-bold">
+        <Link to="/" onClick={() => setOpen(false)} className="flex min-w-0 items-center gap-2 font-display text-base font-bold sm:text-lg">
           <img src={logo} alt="Brightlane Digital logo" width={36} height={36} className="h-9 w-9" />
           {BRAND}
         </Link>
-        <nav className="hidden items-center gap-8 md:flex">
+        <nav aria-label="Main navigation" className="hidden items-center gap-6 lg:flex">
           {nav.map((n) => (
             <Link key={n.to} to={n.to} className="text-sm text-muted-foreground hover:text-foreground"
               activeProps={{ className: "text-sm text-primary" }} activeOptions={{ exact: true }}>
@@ -30,10 +32,10 @@ export function Header() {
           ))}
           <Link to="/contact" className="btn-primary !py-2 text-sm">Get a free quote</Link>
         </nav>
-        <button className="md:hidden text-2xl" onClick={() => setOpen(!open)} aria-label="Menu">☰</button>
+        <Button variant="ghost" size="icon" className="shrink-0 lg:hidden" onClick={() => setOpen(!open)} aria-label={open ? "Close menu" : "Open menu"} aria-expanded={open} aria-controls="site-menu">{open ? <X /> : <Menu />}</Button>
       </div>
       {open && (
-        <nav className="flex flex-col gap-4 border-t border-border px-6 py-4 md:hidden">
+        <nav id="site-menu" aria-label="Compact navigation" className="flex flex-col gap-4 border-t border-border px-6 py-4 lg:hidden">
           {nav.map((n) => (
             <Link key={n.to} to={n.to} onClick={() => setOpen(false)}>{n.label}</Link>
           ))}

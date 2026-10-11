@@ -1,4 +1,5 @@
 # Tasks
+- [ ] Improve animation efficiency and navigation, then check every page.
 - [x] Add and verify a professional three-second entrance screen.
 - [x] Automatically start Nova when opened and refine greeting and voice controls.
 - [x] Refine smooth site-wide 3D motion with reduced-motion support.
