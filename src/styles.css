@@ -137,3 +137,12 @@ body { -webkit-font-smoothing: antialiased; }
   .card-lift, .card-lift:hover .icon-3d, .chip-3d:hover, .ai-fab:hover { transform: none; transition: none; }
   .typing i, .mic-live { animation: none; }
 }
+
+.welcome-brand { animation: welcome-brand .8s cubic-bezier(.2,.7,.2,1) both; }
+.welcome-progress { animation: welcome-progress 3s linear both; }
+@keyframes welcome-brand {
+  from { opacity: 0; transform: perspective(1200px) rotateX(6deg) translateY(18px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes welcome-progress { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@media (prefers-reduced-motion: reduce) { .welcome-brand, .welcome-progress { animation: none; } }

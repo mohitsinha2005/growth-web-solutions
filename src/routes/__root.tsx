@@ -16,6 +16,7 @@ import { Header, Footer } from "@/components/site";
 import { Background3D } from "@/components/Background3D";
 import { Motion3D } from "@/components/Motion3D";
 import { VoiceBot } from "@/components/VoiceBot";
+import { WelcomeScreen } from "@/components/WelcomeScreen";
 
 function NotFoundComponent() {
   return (
@@ -119,12 +120,14 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <WelcomeScreen>
       <Background3D />
       <Header />
       <main><Outlet /></main>
       <Footer />
       <Motion3D />
       <VoiceBot />
+      </WelcomeScreen>
     </QueryClientProvider>
   );
 }

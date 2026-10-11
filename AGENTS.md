@@ -11,3 +11,4 @@
 
 - Keep live voice transport in the existing useLiveVoice hook; assistant controls call start directly from the opening click and stop on either close action, preserving media readiness and session cleanup.
 - Apply site-wide presentation motion through Motion3D and Background3D, with reduced-motion guards, so page components do not manage animation listeners.
+- Keep the entrance screen in the shared root as a temporary overlay with inert site content; it runs once per document load without adding redirects or repeating on internal navigation.
