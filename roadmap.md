@@ -1,4 +1,5 @@
 # Tasks
+- [x] Add and verify a professional three-second entrance screen.
 - [x] Automatically start Nova when opened and refine greeting and voice controls.
 - [x] Refine smooth site-wide 3D motion with reduced-motion support.
 - [x] Verify assistant opening/closing, four tests, page metadata, and clean preview build.
