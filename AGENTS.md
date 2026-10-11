@@ -8,3 +8,6 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+- Keep live voice transport in the existing useLiveVoice hook; assistant controls call start directly from the opening click and stop on either close action, preserving media readiness and session cleanup.
+- Apply site-wide presentation motion through Motion3D and Background3D, with reduced-motion guards, so page components do not manage animation listeners.
