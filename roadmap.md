@@ -1,4 +1,5 @@
 # Tasks
-- [ ] Automatically start Nova when opened and refine greeting and voice controls.
-- [ ] Refine smooth site-wide 3D motion with reduced-motion support.
-- [ ] Verify assistant interaction and page metadata.
+- [x] Automatically start Nova when opened and refine greeting and voice controls.
+- [x] Refine smooth site-wide 3D motion with reduced-motion support.
+- [x] Verify assistant opening/closing, four tests, page metadata, and clean preview build.
+- [ ] Verify audible greeting and back-and-forth: blocked by voice network setup timeout in the test browser; requires a working microphone-enabled browser connection.
