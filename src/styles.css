@@ -139,10 +139,25 @@ body { -webkit-font-smoothing: antialiased; }
 }
 
 .welcome-brand { animation: welcome-brand .8s cubic-bezier(.2,.7,.2,1) both; }
+.welcome-screen { perspective: 1200px; }
+.welcome-backdrop { animation: welcome-backdrop 3s ease-out both; }
+.welcome-logo { animation: welcome-logo 1.4s cubic-bezier(.2,.7,.2,1) both; }
+.welcome-growth { width: min(46vw, 550px); height: min(48vh, 360px); opacity: .4; pointer-events: none; perspective: 1000px; }
+.welcome-growth-stage { position: absolute; inset: 0 18% 0 0; display: flex; align-items: flex-end; gap: 12%; transform-style: preserve-3d; transform: rotateX(12deg) rotateY(-24deg); }
+.welcome-column { position: relative; display: block; width: 14%; height: 28%; background: color-mix(in oklab, var(--primary) 65%, var(--background)); border: 1px solid var(--border); transform-style: preserve-3d; transform-origin: bottom; animation: welcome-column 1.5s cubic-bezier(.16,1,.3,1) both; }
+.welcome-column:nth-child(2) { height: 46%; animation-delay: .15s; }
+.welcome-column:nth-child(3) { height: 68%; animation-delay: .3s; }
+.welcome-column:nth-child(4) { height: 92%; animation-delay: .45s; }
+.welcome-column i { position: absolute; inset: 0; background: var(--primary); transform: rotateY(90deg); transform-origin: right; }
+.welcome-column b { position: absolute; left: 0; top: 0; width: 100%; aspect-ratio: 1; background: var(--accent); transform: rotateX(-90deg); transform-origin: top; }
+@keyframes welcome-column { from { opacity: 0; transform: scaleY(.03) translateZ(-45px); } to { opacity: 1; transform: scaleY(1) translateZ(0); } }
+@keyframes welcome-logo { from { opacity: 0; transform: rotateY(-45deg) translateZ(-80px) scale(.8); } to { opacity: 1; transform: rotateY(0) translateZ(0) scale(1); } }
+@keyframes welcome-backdrop { from { transform: scale(1.07); } to { transform: scale(1); } }
 .welcome-progress { animation: welcome-progress 3s linear both; }
 @keyframes welcome-brand {
   from { opacity: 0; transform: perspective(1200px) rotateX(6deg) translateY(18px); }
   to { opacity: 1; transform: none; }
 }
 @keyframes welcome-progress { from { transform: scaleX(0); } to { transform: scaleX(1); } }
-@media (prefers-reduced-motion: reduce) { .welcome-brand, .welcome-progress { animation: none; } }
+@media (max-width: 640px) { .welcome-growth { width: 70vw; height: 26vh; opacity: .2; } }
+@media (prefers-reduced-motion: reduce) { .welcome-brand, .welcome-progress, .welcome-logo, .welcome-column, .welcome-backdrop { animation: none; } }
