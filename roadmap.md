@@ -1,4 +1,5 @@
 # Tasks
+- [ ] Add professional 3D animation to the existing three-second entry screen.
 - [ ] Refine fast, professional live voice responses and verify AI access; explain the limited free allowance.
 - [x] Improve animation efficiency and navigation; checked all five pages, compact menu, scrolling, and five passing tests.
 - [x] Add and verify a professional three-second entrance screen.
