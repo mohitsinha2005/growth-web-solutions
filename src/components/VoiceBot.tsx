@@ -45,6 +45,8 @@ export function VoiceBot() {
   async function send(text: string) {
     const content = text.trim();
     if (!content || busy) return;
+    // Typed replies and live speech must not compete for the same conversation.
+    if (!voiceIdle) voice.stop();
     setError(null);
     const history = [...msgs.filter((m) => m !== GREETING), { role: "user" as const, content }];
     setMsgs((p) => [...p, { role: "user", content }, { role: "assistant", content: "" }]);
