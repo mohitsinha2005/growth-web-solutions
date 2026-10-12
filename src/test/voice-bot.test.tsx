@@ -22,9 +22,14 @@ describe("Nova voice opening", () => {
     render(<VoiceBot />);
     fireEvent.click(screen.getByRole("button", { name: "Chat with our AI assistant" }));
     fireEvent.change(screen.getByRole("textbox", { name: "Message Nova" }), { target: { value: "I need a website" } });
-    fireEvent.click(screen.getByRole("button", { name: "Send", exact: true }));
+    fireEvent.click(screen.getByRole("button", { name: /^Send$/ }));
     expect(controls.stop).toHaveBeenCalledTimes(1);
-    expect(controls.stop.mock.invocationCallOrder[0]).toBeLessThan(fetchReply.mock.invocationCallOrder[0]);
+    const stopOrder = controls.stop.mock.invocationCallOrder[0];
+    const fetchOrder = fetchReply.mock.invocationCallOrder[0];
+    expect(typeof stopOrder).toBe("number");
+    expect(typeof fetchOrder).toBe("number");
+    if (stopOrder === undefined || fetchOrder === undefined) throw new Error("Both voice stop and chat request must run");
+    expect(stopOrder).toBeLessThan(fetchOrder);
     await waitFor(() => expect(screen.getByText("We can help with your website.")).toBeTruthy());
   });
   it("starts voice once when the visitor opens the AI assistant", () => {
