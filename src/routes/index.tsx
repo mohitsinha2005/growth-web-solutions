@@ -50,7 +50,7 @@ function Index() {
         </div>
       </section>
 
-      <section className="border-y border-border bg-surface/70 backdrop-blur">
+      <section className="border-y border-border bg-surface/70">
         <div className="mx-auto grid max-w-6xl grid-cols-2 gap-6 px-6 py-10 md:grid-cols-4">
           {stats.map(([n, l]) => (
             <div key={l}><p className="font-display text-3xl font-bold text-primary">{n}</p><p className="text-sm text-muted-foreground">{l}</p></div>
