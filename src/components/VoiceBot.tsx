@@ -110,8 +110,12 @@ export function VoiceBot() {
           </div>
 
           <div className="flex items-center gap-3 border-b border-border bg-secondary/30 px-4 py-3">
-            <Headphones className="h-4 w-4 shrink-0 text-accent" />
-            <p className="flex-1 text-xs text-muted-foreground">{voice.status === "connecting" ? "Allow microphone access to talk with Nova." : voice.status === "connected" ? "Nova · Your business growth partner" : "Microphone access is used for voice conversation."}</p>
+            {voice.status === "connected" && !voice.muted ? (
+              <span className="voice-wave" aria-hidden="true"><i /><i /><i /><i /><i /></span>
+            ) : (
+              <Headphones className="h-4 w-4 shrink-0 text-accent" />
+            )}
+            <p className="flex-1 text-xs text-muted-foreground">{voice.status === "connecting" ? "Allow microphone access to talk with Nova." : voice.status === "connected" ? "Live — just speak, you can interrupt Nova anytime." : "Tap the mic to talk with Nova live."}</p>
             {voice.status === "connected" && <Button variant="ghost" size="icon" aria-label={voice.muted ? "Unmute microphone" : "Mute microphone"} title={voice.muted ? "Unmute microphone" : "Mute microphone"} onClick={() => voice.setMuted(!voice.muted)}>{voice.muted ? <MicOff /> : <Mic />}</Button>}
           </div>
 

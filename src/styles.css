@@ -161,3 +161,12 @@ body { -webkit-font-smoothing: antialiased; }
 @keyframes welcome-progress { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 @media (max-width: 640px) { .welcome-growth { width: 70vw; height: 26vh; opacity: .2; } }
 @media (prefers-reduced-motion: reduce) { .welcome-brand, .welcome-progress, .welcome-logo, .welcome-column, .welcome-backdrop { animation: none; } }
+
+.voice-wave { display: inline-flex; align-items: center; gap: 2px; height: 16px; }
+.voice-wave i { width: 3px; height: 100%; border-radius: 2px; background: var(--accent); animation: voice-wave 1s ease-in-out infinite; }
+.voice-wave i:nth-child(2) { animation-delay: .15s } .voice-wave i:nth-child(3) { animation-delay: .3s }
+.voice-wave i:nth-child(4) { animation-delay: .45s } .voice-wave i:nth-child(5) { animation-delay: .6s }
+@keyframes voice-wave { 0%,100% { transform: scaleY(.3) } 50% { transform: scaleY(1) } }
+@media (prefers-reduced-motion: reduce) { .voice-wave i { animation: none; transform: scaleY(.6) } }
+.faq summary { cursor: pointer; list-style: none; }
+.faq summary::-webkit-details-marker { display: none; }

@@ -20,6 +20,14 @@ const steps = [
   ["03", "Build", "Design, development and campaigns, done right."],
   ["04", "Grow", "We measure results and keep improving."],
 ];
+const industries = ["Retail & E-commerce", "Healthcare", "Education", "Real Estate", "Finance", "Restaurants", "Manufacturing", "Startups", "Travel"];
+const faqs = [
+  ["Do you work with clients outside my country?", "Yes. We work remotely with businesses in every country and adjust meetings to your time zone."],
+  ["How long does a website take?", "Most business websites are ready in 2–4 weeks, depending on pages and features."],
+  ["How much will my project cost?", "Every project is different. Share your goals and we send a free custom quote within 24 hours."],
+  ["Do you offer support after launch?", "Yes. We provide maintenance, updates, marketing and analytics support plans."],
+  ["Can I talk to your AI assistant?", "Yes. Click “Ask AI” and talk with Nova by voice or text, anytime."],
+];
 
 function Index() {
   return (
@@ -73,6 +81,27 @@ function Index() {
               <h3 className="mt-2 text-lg font-semibold">{t}</h3>
               <p className="mt-1 text-sm text-muted-foreground">{d}</p>
             </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-6xl px-6 py-20">
+        <h2 className="text-3xl font-bold md:text-4xl">Industries we serve</h2>
+        <div className="mt-8 flex flex-wrap gap-3">
+          {industries.map((i) => (
+            <span key={i} className="chip-3d rounded-full border border-border bg-card/70 px-4 py-2 text-sm">{i}</span>
+          ))}
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-3xl px-6 pb-20">
+        <h2 className="text-3xl font-bold md:text-4xl">Frequently asked questions</h2>
+        <div className="mt-8 space-y-3">
+          {faqs.map(([q, a]) => (
+            <details key={q} className="faq card-lift p-5">
+              <summary className="font-semibold">{q}</summary>
+              <p className="mt-3 text-muted-foreground">{a}</p>
+            </details>
           ))}
         </div>
       </section>
