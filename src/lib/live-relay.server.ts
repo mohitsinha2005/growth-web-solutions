@@ -51,7 +51,7 @@ export function getLiveConfig(): LiveConfig {
   const config: LiveConfig = {
     ...liveSettings,
     key: process.env["LOVABLE_API_KEY"] ?? "",
-    openingInstructions: "Say: Hi, I'm Nova from Brightlane Digital. What would you like to achieve for your business today? Then pause and listen. Use a warm, professional conversational tone.",
+    openingInstructions: "Say exactly: Welcome to our website! I'm Nova from Brightlane Digital. How may I help you today? Then pause and listen. Use a warm, professional conversational tone.",
   };
   if ([config.baseURL, config.key, config.liveModel, config.backendModel].some((value) => !value)) {
     throw new Error("Missing Live relay configuration");
