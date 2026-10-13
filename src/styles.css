@@ -93,8 +93,7 @@
   &:hover { background: var(--secondary); }
 }
 @utility card-lift {
-  border: 1px solid var(--border); background: color-mix(in oklab, var(--card) 70%, transparent);
-  backdrop-filter: blur(12px); border-radius: var(--radius-xl);
+  border: 1px solid var(--border); background: color-mix(in oklab, var(--card) 88%, transparent); border-radius: var(--radius-xl);
   transition: transform .2s ease-out, border-color .25s, box-shadow .25s; transform-style: preserve-3d;
   &:hover { border-color: oklch(0.64 0.19 255 / 0.6); box-shadow: 0 30px 60px -30px oklch(0.64 0.19 255 / 0.6); }
 }
@@ -109,7 +108,7 @@
 @keyframes orb { 50% { transform: scale(1.15); box-shadow: 0 0 30px var(--primary); } }
 @media (prefers-reduced-motion: reduce) { .reveal-3d { opacity: 1; transform: none; } .ai-fab, .orb-live { animation: none; } }
 
-.bg-zoom { animation: bg-zoom 30s ease-in-out infinite alternate; }
+.bg-zoom { }
 @keyframes bg-zoom { from { scale: 1; } to { scale: 1.08; } }
 .bg-overlay { background: linear-gradient(90deg, oklch(0.13 0.035 258 / 0.92) 0%, oklch(0.13 0.035 258 / 0.7) 45%, oklch(0.13 0.035 258 / 0.35) 100%), linear-gradient(0deg, oklch(0.13 0.035 258 / 0.85), transparent 40%); }
 .bg-gridlines { background-image: linear-gradient(oklch(0.64 0.19 255 / 0.06) 1px, transparent 1px), linear-gradient(90deg, oklch(0.64 0.19 255 / 0.06) 1px, transparent 1px); background-size: 64px 64px; mask-image: radial-gradient(ellipse at 70% 30%, black, transparent 75%); animation: grid-drift 20s linear infinite; }

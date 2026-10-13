@@ -47,7 +47,7 @@ export function Header() {
 
 export function Footer() {
   return (
-    <footer className="border-t border-border bg-surface/80 backdrop-blur">
+    <footer className="border-t border-border bg-surface/90">
       <div className="mx-auto grid max-w-6xl gap-10 px-6 py-14 md:grid-cols-4">
         <div className="md:col-span-2">
           <p className="flex items-center gap-2 font-display text-xl font-bold"><img src={logo} alt="" width={32} height={32} loading="lazy" className="h-8 w-8" />{BRAND}</p>
@@ -80,7 +80,7 @@ export function Footer() {
 export function CTA() {
   return (
     <section className="mx-auto max-w-6xl px-6 py-20">
-      <div className="bg-glow rounded-3xl border border-border bg-card/70 p-10 backdrop-blur text-center md:p-16">
+      <div className="bg-glow rounded-3xl border border-border bg-card/85 p-10 text-center md:p-16">
         <h2 className="text-3xl font-bold md:text-5xl">Ready to grow your business?</h2>
         <p className="mx-auto mt-4 max-w-xl text-muted-foreground">
           Tell us about your goals. We'll reply within 24 hours with a clear plan and price.
