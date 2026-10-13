@@ -4,10 +4,13 @@ import growth from "@/assets/bg-growth.jpg";
 
 export function WelcomeScreen({ children }: { children: ReactNode }) {
   const [welcoming, setWelcoming] = useState(true);
+  const [leaving, setLeaving] = useState(false);
+  const [entered, setEntered] = useState(false);
 
   useEffect(() => {
-    const timer = window.setTimeout(() => setWelcoming(false), 3000);
-    return () => window.clearTimeout(timer);
+    const leave = window.setTimeout(() => setLeaving(true), 2350);
+    const timer = window.setTimeout(() => { setWelcoming(false); setEntered(true); }, 3000);
+    return () => { window.clearTimeout(leave); window.clearTimeout(timer); };
   }, []);
 
   useEffect(() => {
@@ -20,7 +23,7 @@ export function WelcomeScreen({ children }: { children: ReactNode }) {
   return (
     <>
       {welcoming && (
-        <div role="status" aria-label="Welcome to Brightlane Digital" className="welcome-screen fixed inset-0 z-[100] flex min-h-dvh items-center justify-center overflow-hidden bg-background px-6 text-center">
+        <div role="status" aria-label="Welcome to Brightlane Digital" className={`welcome-screen ${leaving ? "welcome-leaving" : ""} fixed inset-0 z-[100] flex min-h-dvh items-center justify-center overflow-hidden bg-background px-6 text-center`}>
           <img src={growth} alt="" className="welcome-backdrop absolute inset-0 h-full w-full object-cover" />
           <div className="bg-overlay absolute inset-0" />
           <div className="welcome-growth absolute bottom-0 right-0" aria-hidden="true">
@@ -40,7 +43,7 @@ export function WelcomeScreen({ children }: { children: ReactNode }) {
           </div>
         </div>
       )}
-      <div inert={welcoming} aria-hidden={welcoming || undefined}>{children}</div>
+      <div inert={welcoming} aria-hidden={welcoming || undefined} className={entered ? "site-enter" : undefined}>{children}</div>
     </>
   );
 }
