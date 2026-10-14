@@ -74,7 +74,7 @@ export function Background3D() {
         const a = targets[Math.floor(p)]!, b = targets[Math.min(Math.floor(p) + 1, targets.length - 1)]!, f = p - Math.floor(p);
         const ease = f * f * (3 - 2 * f), lerp = 1 - Math.exp(-4 * dt);
         for (let i = 0; i < N * 3; i++) pos[i]! += (a[i]! + (b[i]! - a[i]!) * ease - pos[i]!) * lerp;
-        geo.attributes.position!.needsUpdate = true;
+        geo.attributes["position"]!.needsUpdate = true;
         points.rotation.y += dt * 0.08;
         points.rotation.x += ((my * 0.3 + (p > 2.2 ? 0.45 : 0)) - points.rotation.x) * lerp;
         camera.position.x += (mx * 1.2 - camera.position.x) * lerp;
