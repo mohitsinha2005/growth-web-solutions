@@ -1,27 +1,34 @@
 import { useEffect, useRef } from "react";
 
 // Cosmic particle universe: glowing particles morph between shapes as the visitor scrolls
-// (energy ring → data helix → growth wave → galaxy).
+// (global network → growth bars → rising trend → goal achieved).
 const N = 7000;
 
 function shapes() {
-  const ring = new Float32Array(N * 3), helix = new Float32Array(N * 3), wave = new Float32Array(N * 3), galaxy = new Float32Array(N * 3);
+  const globe = new Float32Array(N * 3), bars = new Float32Array(N * 3), trend = new Float32Array(N * 3), target = new Float32Array(N * 3);
+  const heights = [1.2, 2, 2.6, 3.6, 4.6, 6];
   for (let i = 0; i < N; i++) {
-    const r = Math.random(), a = Math.random() * Math.PI * 2, k = i * 3;
-    // Ring: thick glowing torus shell
-    const rr = 3.2 + (Math.random() - 0.5) * 0.7 * Math.sin(a * 6 + r * 4);
-    ring[k] = Math.cos(a) * rr; ring[k + 1] = Math.sin(a) * rr; ring[k + 2] = (Math.random() - 0.5) * 0.8;
-    // Helix: twisting vertical column
-    const t = (i / N) * 2 - 1, ha = t * 9 + (i % 2) * Math.PI, hr = 0.9 + Math.random() * 0.5;
-    helix[k] = Math.cos(ha) * hr + (Math.random() - 0.5) * 0.3; helix[k + 1] = t * 5; helix[k + 2] = Math.sin(ha) * hr;
-    // Wave: rolling particle surface
-    const x = (Math.random() - 0.5) * 16, z = (Math.random() - 0.5) * 8;
-    wave[k] = x; wave[k + 1] = Math.sin(x * 0.45) * 0.9 + Math.cos(z * 0.6) * 0.4 - 1.5; wave[k + 2] = z;
-    // Galaxy: spiral arms + bright core
-    const arm = i % 3, d = Math.pow(Math.random(), 1.6) * 5.5, ga = d * 1.1 + (arm * Math.PI * 2) / 3;
-    galaxy[k] = Math.cos(ga) * d + (Math.random() - 0.5) * 0.4; galaxy[k + 1] = (Math.random() - 0.5) * 0.25 * (6 - d) / 6; galaxy[k + 2] = Math.sin(ga) * d + (Math.random() - 0.5) * 0.4;
+    const k = i * 3, r = Math.random();
+    // 1. Global business network: particle globe
+    const u = Math.random() * 2 - 1, th = Math.random() * Math.PI * 2, gr = 3.2 + (Math.random() - 0.5) * 0.15;
+    const sq = Math.sqrt(1 - u * u);
+    globe[k] = sq * Math.cos(th) * gr; globe[k + 1] = u * gr; globe[k + 2] = sq * Math.sin(th) * gr;
+    // 2. Growth bar chart: six rising columns
+    const col = i % 6, h = heights[col]!;
+    bars[k] = (col - 2.5) * 1.3 + (Math.random() - 0.5) * 0.8; bars[k + 1] = -3 + r * h; bars[k + 2] = (Math.random() - 0.5) * 0.8;
+    // 3. Rising trend line with arrow head
+    if (i % 5 === 0) {
+      const t = Math.random(), ax = 4.5 - t * 1.2, ay = 3 - t * 0.2;
+      trend[k] = ax + (Math.random() - 0.5) * t * 1.6 * 0.5; trend[k + 1] = ay - t * (Math.random() > 0.5 ? 1 : -0.2); trend[k + 2] = (Math.random() - 0.5) * 0.3;
+    } else {
+      const t = Math.random(), x = -6 + t * 10.5, y = -3 + t * 6 + Math.sin(t * 14) * 0.45;
+      trend[k] = x; trend[k + 1] = y + (Math.random() - 0.5) * 0.3; trend[k + 2] = (Math.random() - 0.5) * 0.6;
+    }
+    // 4. Target achieved: concentric goal rings
+    const ring = i % 4, ta = Math.random() * Math.PI * 2, tr = ring === 0 ? Math.random() * 0.5 : ring * 1.3 + (Math.random() - 0.5) * 0.15;
+    target[k] = Math.cos(ta) * tr; target[k + 1] = Math.sin(ta) * tr; target[k + 2] = (Math.random() - 0.5) * 0.3;
   }
-  return [ring, helix, wave, galaxy];
+  return [globe, bars, trend, target];
 }
 
 export function Background3D() {
@@ -46,7 +53,7 @@ export function Background3D() {
       const colors = new Float32Array(N * 3);
       const c = new THREE.Color();
       for (let i = 0; i < N; i++) {
-        c.setHSL(0.6 - Math.random() * 0.12 + (i % 7 === 0 ? 0.42 : 0), 0.9, 0.55 + Math.random() * 0.2);
+        c.setHSL(i % 6 === 0 ? 0.38 : 0.58 - Math.random() * 0.08, 0.9, 0.55 + Math.random() * 0.2);
         colors.set([c.r, c.g, c.b], i * 3);
       }
       const geo = new THREE.BufferGeometry();
@@ -75,8 +82,8 @@ export function Background3D() {
         const ease = f * f * (3 - 2 * f), lerp = 1 - Math.exp(-4 * dt);
         for (let i = 0; i < N * 3; i++) pos[i]! += (a[i]! + (b[i]! - a[i]!) * ease - pos[i]!) * lerp;
         geo.attributes["position"]!.needsUpdate = true;
-        points.rotation.y += dt * 0.08;
-        points.rotation.x += ((my * 0.3 + (p > 2.2 ? 0.45 : 0)) - points.rotation.x) * lerp;
+        points.rotation.y = p < 0.5 ? points.rotation.y + dt * 0.12 : points.rotation.y * (1 - lerp) + Math.sin(now / 4000) * 0.25 * lerp;
+        points.rotation.x += ((my * 0.3 + 0) - points.rotation.x) * lerp;
         camera.position.x += (mx * 1.2 - camera.position.x) * lerp;
         camera.lookAt(0, 0, 0);
         renderer.render(scene, camera);
