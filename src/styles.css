@@ -179,3 +179,6 @@ body { -webkit-font-smoothing: antialiased; }
 .site-enter { animation: site-enter .6s ease-out; }
 @keyframes site-enter { from { opacity: 0; } to { opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { .welcome-leaving, .welcome-leaving .welcome-brand, .site-enter { animation: none; } }
+
+.cosmic-bg { background: radial-gradient(ellipse at 50% 40%, oklch(0.2 0.08 270), oklch(0.08 0.02 265) 70%); }
+.cosmic-vignette { background: radial-gradient(ellipse at center, transparent 45%, oklch(0.08 0.02 265 / 0.75)); }
