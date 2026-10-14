@@ -54,6 +54,7 @@ export function Background3D() {
       geo.setAttribute("color", new THREE.BufferAttribute(colors, 3));
       const mat = new THREE.PointsMaterial({ size: 0.045, vertexColors: true, transparent: true, opacity: 0.9, blending: THREE.AdditiveBlending, depthWrite: false });
       const points = new THREE.Points(geo, mat);
+      points.position.x = window.innerWidth > 900 ? 3 : 0;
       scene.add(points);
 
       const starGeo = new THREE.BufferGeometry();
