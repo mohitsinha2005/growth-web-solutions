@@ -8,6 +8,8 @@ export const Route = createFileRoute("/contact")({
       { name: "description", content: "Get a free quote for your website, marketing or analytics project." },
       { property: "og:title", content: "Contact — Brightlane Digital" },
       { property: "og:description", content: "Tell us about your project and get a free quote within 24 hours." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Contact,
