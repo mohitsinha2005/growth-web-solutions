@@ -1,6 +1,8 @@
 import { useEffect, useRef } from "react";
+import growth from "@/assets/bg-growth.jpg";
 
-// Cosmic particle universe: glowing particles morph between shapes as the visitor scrolls
+// Business-growth background: the growth-city photo sits under glowing particles
+// that morph between growth shapes as the visitor scrolls
 // (global network → growth bars → rising trend → goal achieved).
 const N = 7000;
 
@@ -64,11 +66,6 @@ export function Background3D() {
       points.position.x = window.innerWidth > 900 ? 3 : 0;
       scene.add(points);
 
-      const starGeo = new THREE.BufferGeometry();
-      const stars = new Float32Array(1500 * 3).map(() => (Math.random() - 0.5) * 60);
-      starGeo.setAttribute("position", new THREE.BufferAttribute(stars, 3));
-      const starMat = new THREE.PointsMaterial({ size: 0.05, color: 0xbfd4ff, transparent: true, opacity: 0.7, depthWrite: false });
-      scene.add(new THREE.Points(starGeo, starMat));
 
       let mx = 0, my = 0, raf = 0, last = performance.now();
       const onMove = (e: PointerEvent) => { mx = e.clientX / window.innerWidth - 0.5; my = e.clientY / window.innerHeight - 0.5; };
@@ -102,16 +99,17 @@ export function Background3D() {
         window.removeEventListener("resize", onResize);
         window.removeEventListener("scroll", onScroll);
         document.removeEventListener("visibilitychange", onVis);
-        geo.dispose(); mat.dispose(); starGeo.dispose(); starMat.dispose(); renderer.dispose();
+        geo.dispose(); mat.dispose(); renderer.dispose();
         renderer.domElement.remove();
       };
     });
     return () => { disposed = true; cleanup(); };
   }, []);
   return (
-    <div className="cosmic-bg pointer-events-none fixed inset-0 -z-10 overflow-hidden" aria-hidden>
+    <div className="growth-bg pointer-events-none fixed inset-0 -z-10 overflow-hidden" aria-hidden>
+      <img src={growth} alt="" className="growth-backdrop absolute inset-0 h-full w-full object-cover" />
+      <div className="growth-overlay absolute inset-0" />
       <div ref={host} className="absolute inset-0" />
-      <div className="cosmic-vignette absolute inset-0" />
     </div>
   );
 }
