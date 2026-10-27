@@ -9,6 +9,8 @@ export const Route = createFileRoute("/start")({
       { name: "description", content: "Get a website, marketing and data plan built for growth. Free consultation and custom quote within 24 hours." },
       { property: "og:title", content: "Grow Your Business Online — Brightlane Digital" },
       { property: "og:description", content: "Free growth consultation and custom quote within 24 hours." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Landing,

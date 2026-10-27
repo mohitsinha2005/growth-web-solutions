@@ -1,5 +1,5 @@
 # Tasks
-- [ ] Replace the busy background with a restrained 3D business-growth scene and verify rendering and navigation.
+- [x] Replace the busy background with a restrained 3D business-growth scene and verify rendering and navigation.
 - [x] Add professional 3D animation to the existing three-second entry screen.
 - [x] Refine concise professional live voice responses, prevent overlapping typed replies, and confirm AI calls; free usage is limited.
 - [x] Improve animation efficiency and navigation; checked all five pages, compact menu, scrolling, and five passing tests.

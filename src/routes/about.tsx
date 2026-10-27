@@ -8,6 +8,8 @@ export const Route = createFileRoute("/about")({
       { name: "description", content: "A young, global IT startup helping businesses grow with websites, marketing and data." },
       { property: "og:title", content: "About Us — Brightlane Digital" },
       { property: "og:description", content: "Meet the team helping businesses grow worldwide." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: About,

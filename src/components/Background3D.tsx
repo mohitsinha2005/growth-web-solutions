@@ -91,7 +91,7 @@ export function Background3D() {
         camera.bottom = -span;
         camera.updateProjectionMatrix();
         sculpture.position.set(width < 768 ? 1.7 : aspect * 5, width < 768 ? -2.7 : 0.3, 0);
-        const scale = width < 768 ? 0.78 : 1;
+        const scale = width < 768 ? 0.78 : Math.min(1, aspect * 0.95);
         sculpture.scale.setScalar(scale);
         renderer.setSize(width, height);
         render();
