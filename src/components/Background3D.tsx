@@ -1,157 +1,56 @@
 import { useEffect, useRef } from "react";
+import bg from "@/assets/bg-growth.jpg";
 
-/** A quiet, architectural growth sculpture shared by every page. */
+// Professional business-growth background with 3D mouse + scroll parallax.
 export function Background3D() {
-  const host = useRef<HTMLDivElement>(null);
-
+  const layer = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    let disposed = false;
-    let cleanup = () => {};
-    void import("three").then((THREE) => {
-      const el = host.current;
-      if (disposed || !el) return;
-      const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
-      const styles = getComputedStyle(document.documentElement);
-      const color = (name: string) => styles.getPropertyValue(name).trim();
-      let renderer: InstanceType<typeof THREE.WebGLRenderer>;
-      try {
-        renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "low-power" });
-      } catch { return; }
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
-      renderer.setClearColor(0, 0);
-      renderer.outputColorSpace = THREE.SRGBColorSpace;
-      renderer.toneMapping = THREE.ACESFilmicToneMapping;
-      el.appendChild(renderer.domElement);
-
-      const scene = new THREE.Scene();
-      const camera = new THREE.OrthographicCamera(-10, 10, 7, -7, 0.1, 100);
-      camera.position.set(10, 8, 16);
-      camera.lookAt(0, 1.5, 0);
-      scene.add(new THREE.HemisphereLight(color("--growth-light"), color("--growth-floor"), 2.4));
-      const key = new THREE.DirectionalLight(color("--growth-light"), 3.5);
-      key.position.set(-3, 9, 7);
-      scene.add(key);
-      const rim = new THREE.DirectionalLight(color("--growth-teal"), 2);
-      rim.position.set(6, 4, -4);
-      scene.add(rim);
-
-      const sculpture = new THREE.Group();
-      scene.add(sculpture);
-      const geometries: InstanceType<typeof THREE.BufferGeometry>[] = [];
-      const materials: InstanceType<typeof THREE.Material>[] = [];
-      const metal = new THREE.MeshStandardMaterial({ color: color("--growth-metal"), metalness: 0.45, roughness: 0.3 });
-      const teal = new THREE.MeshStandardMaterial({ color: color("--growth-teal"), metalness: 0.35, roughness: 0.28 });
-      const baseMaterial = new THREE.MeshStandardMaterial({ color: color("--growth-floor"), metalness: 0.2, roughness: 0.65 });
-      const lineMaterial = new THREE.LineBasicMaterial({ color: color("--growth-line"), transparent: true, opacity: 0.22 });
-      materials.push(metal, teal, baseMaterial, lineMaterial);
-      const heights = [1.1, 1.8, 2.8, 4.1, 5.7];
-      const columns = heights.map((height, i) => {
-        const geometry = new THREE.BoxGeometry(0.92, height, 1.25);
-        geometries.push(geometry);
-        const mesh = new THREE.Mesh(geometry, i === 4 ? teal : metal);
-        mesh.position.set((i - 2) * 1.42, height / 2, 0);
-        sculpture.add(mesh);
-        return mesh;
-      });
-      const baseGeometry = new THREE.BoxGeometry(8.6, 0.18, 4.5);
-      geometries.push(baseGeometry);
-      const base = new THREE.Mesh(baseGeometry, baseMaterial);
-      base.position.y = -0.16;
-      sculpture.add(base);
-      // Fine architectural grid, not a glowing particle field.
-      const gridPoints: InstanceType<typeof THREE.Vector3>[] = [];
-      for (let i = -4; i <= 4; i++) {
-        gridPoints.push(new THREE.Vector3(i, -0.06, -2.15), new THREE.Vector3(i, -0.06, 2.15));
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    let mx = 0, my = 0, cx = 0, cy = 0, scroll = window.scrollY, smoothScroll = scroll, raf = 0;
+    const schedule = () => {
+      if (!raf && !document.hidden) raf = requestAnimationFrame(tick);
+    };
+    const onMove = (e: PointerEvent) => {
+      if (e.pointerType !== "mouse") return;
+      mx = e.clientX / window.innerWidth - 0.5;
+      my = e.clientY / window.innerHeight - 0.5;
+      schedule();
+    };
+    const tick = () => {
+      raf = 0;
+      cx += (mx - cx) * 0.1;
+      cy += (my - cy) * 0.1;
+      smoothScroll += (scroll - smoothScroll) * 0.1;
+      const sy = Math.min(smoothScroll, 2000) * 0.015;
+      if (layer.current) {
+        layer.current.style.transform =
+          `perspective(1600px) rotateY(${cx * 3}deg) rotateX(${-cy * 2}deg) translate3d(${-cx * 18}px, ${-cy * 12 - sy}px, 0) scale(1.12)`;
       }
-      for (let i = -2; i <= 2; i++) {
-        gridPoints.push(new THREE.Vector3(-4.15, -0.06, i), new THREE.Vector3(4.15, -0.06, i));
-      }
-      const gridGeometry = new THREE.BufferGeometry().setFromPoints(gridPoints);
-      geometries.push(gridGeometry);
-      sculpture.add(new THREE.LineSegments(gridGeometry, lineMaterial));
-      const curve = new THREE.CatmullRomCurve3(heights.map((height, i) => new THREE.Vector3((i - 2) * 1.42, height + 0.6, 0)));
-      const curveGeometry = new THREE.TubeGeometry(curve, 48, 0.035, 6, false);
-      geometries.push(curveGeometry);
-      sculpture.add(new THREE.Mesh(curveGeometry, teal));
-
-      let raf = 0;
-      let last = 0;
-      let pointerX = 0;
-      let pointerY = 0;
-      let scroll = 0;
-      const render = () => renderer.render(scene, camera);
-      const resize = () => {
-        const width = window.innerWidth;
-        const height = window.innerHeight;
-        const aspect = width / height;
-        const span = width < 768 ? 10.5 : 7.3;
-        camera.left = -span * aspect;
-        camera.right = span * aspect;
-        camera.top = span;
-        camera.bottom = -span;
-        camera.updateProjectionMatrix();
-        sculpture.position.set(width < 768 ? 1.7 : aspect * 5, width < 768 ? -2.7 : 0.3, 0);
-        const scale = width < 768 ? 0.78 : Math.min(1, aspect * 0.95);
-        sculpture.scale.setScalar(scale);
-        renderer.setSize(width, height);
-        render();
-      };
-      const tick = (now: number) => {
-        raf = 0;
-        if (document.hidden || motion.matches) return;
-        if (now - last >= 32) {
-          last = now;
-          sculpture.rotation.y += ((pointerX * 0.1 + scroll * 0.07) - sculpture.rotation.y) * 0.05;
-          sculpture.rotation.x += (pointerY * 0.025 - sculpture.rotation.x) * 0.05;
-          columns.forEach((column, i) => {
-            column.scale.y = 1 + Math.sin(now * 0.00045 + i * 0.5) * 0.012;
-            column.position.y = (heights[i] ?? 1) * column.scale.y / 2;
-          });
-          render();
-        }
-        raf = requestAnimationFrame(tick);
-      };
-      const resume = () => {
-        if (document.hidden || motion.matches) {
-          cancelAnimationFrame(raf);
-          raf = 0;
-          sculpture.rotation.set(0, 0, 0);
-          columns.forEach((column, i) => { column.scale.y = 1; column.position.y = (heights[i] ?? 1) / 2; });
-          render();
-        } else if (!raf) { last = 0; raf = requestAnimationFrame(tick); }
-      };
-      const onMove = (event: PointerEvent) => {
-        pointerX = event.clientX / window.innerWidth - 0.5;
-        pointerY = event.clientY / window.innerHeight - 0.5;
-      };
-      const onScroll = () => { scroll = Math.min(window.scrollY / window.innerHeight, 4); };
-      window.addEventListener("pointermove", onMove, { passive: true });
-      window.addEventListener("scroll", onScroll, { passive: true });
-      window.addEventListener("resize", resize);
-      document.addEventListener("visibilitychange", resume);
-      motion.addEventListener("change", resume);
-      resize();
-      resume();
-      cleanup = () => {
-        cancelAnimationFrame(raf);
-        window.removeEventListener("pointermove", onMove);
-        window.removeEventListener("scroll", onScroll);
-        window.removeEventListener("resize", resize);
-        document.removeEventListener("visibilitychange", resume);
-        motion.removeEventListener("change", resume);
-        geometries.forEach((geometry) => geometry.dispose());
-        materials.forEach((material) => material.dispose());
-        renderer.dispose();
-        renderer.domElement.remove();
-      };
-    });
-    return () => { disposed = true; cleanup(); };
+      if (Math.abs(mx - cx) + Math.abs(my - cy) > 0.001 || Math.abs(scroll - smoothScroll) > 0.1) schedule();
+    };
+    const onScroll = () => { scroll = window.scrollY; schedule(); };
+    const onVisibility = () => {
+      if (document.hidden) { cancelAnimationFrame(raf); raf = 0; }
+      else schedule();
+    };
+    window.addEventListener("pointermove", onMove, { passive: true });
+    window.addEventListener("scroll", onScroll, { passive: true });
+    document.addEventListener("visibilitychange", onVisibility);
+    schedule();
+    return () => {
+      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("scroll", onScroll);
+      document.removeEventListener("visibilitychange", onVisibility);
+      cancelAnimationFrame(raf);
+    };
   }, []);
-
   return (
-    <div className="growth-bg pointer-events-none fixed inset-0 -z-10 overflow-hidden" aria-hidden="true">
-      <div ref={host} className="growth-scene absolute inset-0" />
-      <div className="growth-overlay absolute inset-0" />
+    <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden" aria-hidden>
+      <div ref={layer} className="bg-zoom absolute inset-0 will-change-transform">
+        <img src={bg} alt="" width={1920} height={1088} className="h-full w-full object-cover" />
+      </div>
+      <div className="bg-overlay absolute inset-0" />
+      <div className="bg-gridlines absolute inset-0" />
     </div>
   );
 }
