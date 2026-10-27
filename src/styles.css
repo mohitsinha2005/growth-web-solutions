@@ -180,5 +180,9 @@ body { -webkit-font-smoothing: antialiased; }
 @keyframes site-enter { from { opacity: 0; } to { opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { .welcome-leaving, .welcome-leaving .welcome-brand, .site-enter { animation: none; } }
 
-.cosmic-bg { background: radial-gradient(ellipse at 50% 40%, oklch(0.2 0.08 270), oklch(0.08 0.02 265) 70%); }
-.cosmic-vignette { background: radial-gradient(ellipse at center, transparent 45%, oklch(0.08 0.02 265 / 0.75)); }
+.growth-bg { background: linear-gradient(180deg, oklch(0.17 0.04 255), oklch(0.11 0.03 250)); }
+.growth-backdrop { opacity: .3; animation: growth-backdrop 24s ease-in-out infinite alternate; }
+@keyframes growth-backdrop { from { scale: 1; } to { scale: 1.06; } }
+.growth-overlay { background: linear-gradient(90deg, oklch(0.13 0.035 258 / .88), oklch(0.13 0.035 258 / .55) 55%, oklch(0.13 0.035 258 / .3)),
+  linear-gradient(0deg, oklch(0.11 0.03 250 / .85), transparent 45%); }
+@media (prefers-reduced-motion: reduce) { .growth-backdrop { animation: none; } }
