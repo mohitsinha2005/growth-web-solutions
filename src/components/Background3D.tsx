@@ -1,115 +1,157 @@
 import { useEffect, useRef } from "react";
-import growth from "@/assets/bg-growth.jpg";
 
-// Business-growth background: the growth-city photo sits under glowing particles
-// that morph between growth shapes as the visitor scrolls
-// (global network → growth bars → rising trend → goal achieved).
-const N = 7000;
-
-function shapes() {
-  const globe = new Float32Array(N * 3), bars = new Float32Array(N * 3), trend = new Float32Array(N * 3), target = new Float32Array(N * 3);
-  const heights = [1.2, 2, 2.6, 3.6, 4.6, 6];
-  for (let i = 0; i < N; i++) {
-    const k = i * 3, r = Math.random();
-    // 1. Global business network: particle globe
-    const u = Math.random() * 2 - 1, th = Math.random() * Math.PI * 2, gr = 3.2 + (Math.random() - 0.5) * 0.15;
-    const sq = Math.sqrt(1 - u * u);
-    globe[k] = sq * Math.cos(th) * gr; globe[k + 1] = u * gr; globe[k + 2] = sq * Math.sin(th) * gr;
-    // 2. Growth bar chart: six rising columns
-    const col = i % 6, h = heights[col]!;
-    bars[k] = (col - 2.5) * 1.3 + (Math.random() - 0.5) * 0.8; bars[k + 1] = -3 + r * h; bars[k + 2] = (Math.random() - 0.5) * 0.8;
-    // 3. Rising trend line with arrow head
-    if (i % 5 === 0) {
-      const t = Math.random(), ax = 4.5 - t * 1.2, ay = 3 - t * 0.2;
-      trend[k] = ax + (Math.random() - 0.5) * t * 1.6 * 0.5; trend[k + 1] = ay - t * (Math.random() > 0.5 ? 1 : -0.2); trend[k + 2] = (Math.random() - 0.5) * 0.3;
-    } else {
-      const t = Math.random(), x = -6 + t * 10.5, y = -3 + t * 6 + Math.sin(t * 14) * 0.45;
-      trend[k] = x; trend[k + 1] = y + (Math.random() - 0.5) * 0.3; trend[k + 2] = (Math.random() - 0.5) * 0.6;
-    }
-    // 4. Target achieved: concentric goal rings
-    const ring = i % 4, ta = Math.random() * Math.PI * 2, tr = ring === 0 ? Math.random() * 0.5 : ring * 1.3 + (Math.random() - 0.5) * 0.15;
-    target[k] = Math.cos(ta) * tr; target[k + 1] = Math.sin(ta) * tr; target[k + 2] = (Math.random() - 0.5) * 0.3;
-  }
-  return [globe, bars, trend, target];
-}
-
+/** A quiet, architectural growth sculpture shared by every page. */
 export function Background3D() {
   const host = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
-    let disposed = false, cleanup = () => {};
+    let disposed = false;
+    let cleanup = () => {};
     void import("three").then((THREE) => {
       const el = host.current;
       if (disposed || !el) return;
-      const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
+      const styles = getComputedStyle(document.documentElement);
+      const color = (name: string) => styles.getPropertyValue(name).trim();
       let renderer: InstanceType<typeof THREE.WebGLRenderer>;
-      try { renderer = new THREE.WebGLRenderer({ antialias: false, alpha: true, powerPreference: "high-performance" }); } catch { return; }
+      try {
+        renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "low-power" });
+      } catch { return; }
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
-      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setClearColor(0, 0);
+      renderer.outputColorSpace = THREE.SRGBColorSpace;
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
       el.appendChild(renderer.domElement);
+
       const scene = new THREE.Scene();
-      const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 100);
-      camera.position.set(0, 0, 9);
+      const camera = new THREE.OrthographicCamera(-10, 10, 7, -7, 0.1, 100);
+      camera.position.set(10, 8, 16);
+      camera.lookAt(0, 1.5, 0);
+      scene.add(new THREE.HemisphereLight(color("--growth-light"), color("--growth-floor"), 2.4));
+      const key = new THREE.DirectionalLight(color("--growth-light"), 3.5);
+      key.position.set(-3, 9, 7);
+      scene.add(key);
+      const rim = new THREE.DirectionalLight(color("--growth-teal"), 2);
+      rim.position.set(6, 4, -4);
+      scene.add(rim);
 
-      const targets = shapes();
-      const pos = new Float32Array(targets[0]!);
-      const colors = new Float32Array(N * 3);
-      const c = new THREE.Color();
-      for (let i = 0; i < N; i++) {
-        c.setHSL(i % 6 === 0 ? 0.38 : 0.58 - Math.random() * 0.08, 0.9, 0.55 + Math.random() * 0.2);
-        colors.set([c.r, c.g, c.b], i * 3);
+      const sculpture = new THREE.Group();
+      scene.add(sculpture);
+      const geometries: InstanceType<typeof THREE.BufferGeometry>[] = [];
+      const materials: InstanceType<typeof THREE.Material>[] = [];
+      const metal = new THREE.MeshStandardMaterial({ color: color("--growth-metal"), metalness: 0.45, roughness: 0.3 });
+      const teal = new THREE.MeshStandardMaterial({ color: color("--growth-teal"), metalness: 0.35, roughness: 0.28 });
+      const baseMaterial = new THREE.MeshStandardMaterial({ color: color("--growth-floor"), metalness: 0.2, roughness: 0.65 });
+      const lineMaterial = new THREE.LineBasicMaterial({ color: color("--growth-line"), transparent: true, opacity: 0.22 });
+      materials.push(metal, teal, baseMaterial, lineMaterial);
+      const heights = [1.1, 1.8, 2.8, 4.1, 5.7];
+      const columns = heights.map((height, i) => {
+        const geometry = new THREE.BoxGeometry(0.92, height, 1.25);
+        geometries.push(geometry);
+        const mesh = new THREE.Mesh(geometry, i === 4 ? teal : metal);
+        mesh.position.set((i - 2) * 1.42, height / 2, 0);
+        sculpture.add(mesh);
+        return mesh;
+      });
+      const baseGeometry = new THREE.BoxGeometry(8.6, 0.18, 4.5);
+      geometries.push(baseGeometry);
+      const base = new THREE.Mesh(baseGeometry, baseMaterial);
+      base.position.y = -0.16;
+      sculpture.add(base);
+      // Fine architectural grid, not a glowing particle field.
+      const gridPoints: InstanceType<typeof THREE.Vector3>[] = [];
+      for (let i = -4; i <= 4; i++) {
+        gridPoints.push(new THREE.Vector3(i, -0.06, -2.15), new THREE.Vector3(i, -0.06, 2.15));
       }
-      const geo = new THREE.BufferGeometry();
-      geo.setAttribute("position", new THREE.BufferAttribute(pos, 3));
-      geo.setAttribute("color", new THREE.BufferAttribute(colors, 3));
-      const mat = new THREE.PointsMaterial({ size: 0.045, vertexColors: true, transparent: true, opacity: 0.9, blending: THREE.AdditiveBlending, depthWrite: false });
-      const points = new THREE.Points(geo, mat);
-      points.position.x = window.innerWidth > 900 ? 3 : 0;
-      scene.add(points);
+      for (let i = -2; i <= 2; i++) {
+        gridPoints.push(new THREE.Vector3(-4.15, -0.06, i), new THREE.Vector3(4.15, -0.06, i));
+      }
+      const gridGeometry = new THREE.BufferGeometry().setFromPoints(gridPoints);
+      geometries.push(gridGeometry);
+      sculpture.add(new THREE.LineSegments(gridGeometry, lineMaterial));
+      const curve = new THREE.CatmullRomCurve3(heights.map((height, i) => new THREE.Vector3((i - 2) * 1.42, height + 0.6, 0)));
+      const curveGeometry = new THREE.TubeGeometry(curve, 48, 0.035, 6, false);
+      geometries.push(curveGeometry);
+      sculpture.add(new THREE.Mesh(curveGeometry, teal));
 
-
-      let mx = 0, my = 0, raf = 0, last = performance.now();
-      const onMove = (e: PointerEvent) => { mx = e.clientX / window.innerWidth - 0.5; my = e.clientY / window.innerHeight - 0.5; };
-      const onResize = () => { camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight); };
+      let raf = 0;
+      let last = 0;
+      let pointerX = 0;
+      let pointerY = 0;
+      let scroll = 0;
+      const render = () => renderer.render(scene, camera);
+      const resize = () => {
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+        const aspect = width / height;
+        const span = width < 768 ? 10.5 : 7.3;
+        camera.left = -span * aspect;
+        camera.right = span * aspect;
+        camera.top = span;
+        camera.bottom = -span;
+        camera.updateProjectionMatrix();
+        sculpture.position.set(width < 768 ? 1.7 : aspect * 5, width < 768 ? -2.7 : 0.3, 0);
+        const scale = width < 768 ? 0.78 : 1;
+        sculpture.scale.setScalar(scale);
+        renderer.setSize(width, height);
+        render();
+      };
       const tick = (now: number) => {
         raf = 0;
-        const dt = Math.min((now - last) / 1000, 0.05); last = now;
-        const max = Math.max(document.documentElement.scrollHeight - window.innerHeight, 1);
-        const p = Math.min(window.scrollY / max, 1) * (targets.length - 1);
-        const a = targets[Math.floor(p)]!, b = targets[Math.min(Math.floor(p) + 1, targets.length - 1)]!, f = p - Math.floor(p);
-        const ease = f * f * (3 - 2 * f), lerp = 1 - Math.exp(-4 * dt);
-        for (let i = 0; i < N * 3; i++) pos[i]! += (a[i]! + (b[i]! - a[i]!) * ease - pos[i]!) * lerp;
-        geo.attributes["position"]!.needsUpdate = true;
-        points.rotation.y = p < 0.5 ? points.rotation.y + dt * 0.12 : points.rotation.y * (1 - lerp) + Math.sin(now / 4000) * 0.25 * lerp;
-        points.rotation.x += ((my * 0.3 + 0) - points.rotation.x) * lerp;
-        camera.position.x += (mx * 1.2 - camera.position.x) * lerp;
-        camera.lookAt(0, 0, 0);
-        renderer.render(scene, camera);
-        if (!reduce && !document.hidden) raf = requestAnimationFrame(tick);
+        if (document.hidden || motion.matches) return;
+        if (now - last >= 32) {
+          last = now;
+          sculpture.rotation.y += ((pointerX * 0.1 + scroll * 0.07) - sculpture.rotation.y) * 0.05;
+          sculpture.rotation.x += (pointerY * 0.025 - sculpture.rotation.x) * 0.05;
+          columns.forEach((column, i) => {
+            column.scale.y = 1 + Math.sin(now * 0.00045 + i * 0.5) * 0.012;
+            column.position.y = (heights[i] ?? 1) * column.scale.y / 2;
+          });
+          render();
+        }
+        raf = requestAnimationFrame(tick);
       };
-      const onVis = () => { if (!document.hidden && !raf && !reduce) { last = performance.now(); raf = requestAnimationFrame(tick); } };
-      const onScroll = () => { if (reduce) tick(performance.now()); };
+      const resume = () => {
+        if (document.hidden || motion.matches) {
+          cancelAnimationFrame(raf);
+          raf = 0;
+          sculpture.rotation.set(0, 0, 0);
+          columns.forEach((column, i) => { column.scale.y = 1; column.position.y = (heights[i] ?? 1) / 2; });
+          render();
+        } else if (!raf) { last = 0; raf = requestAnimationFrame(tick); }
+      };
+      const onMove = (event: PointerEvent) => {
+        pointerX = event.clientX / window.innerWidth - 0.5;
+        pointerY = event.clientY / window.innerHeight - 0.5;
+      };
+      const onScroll = () => { scroll = Math.min(window.scrollY / window.innerHeight, 4); };
       window.addEventListener("pointermove", onMove, { passive: true });
-      window.addEventListener("resize", onResize);
       window.addEventListener("scroll", onScroll, { passive: true });
-      document.addEventListener("visibilitychange", onVis);
-      raf = requestAnimationFrame(tick);
+      window.addEventListener("resize", resize);
+      document.addEventListener("visibilitychange", resume);
+      motion.addEventListener("change", resume);
+      resize();
+      resume();
       cleanup = () => {
         cancelAnimationFrame(raf);
         window.removeEventListener("pointermove", onMove);
-        window.removeEventListener("resize", onResize);
         window.removeEventListener("scroll", onScroll);
-        document.removeEventListener("visibilitychange", onVis);
-        geo.dispose(); mat.dispose(); renderer.dispose();
+        window.removeEventListener("resize", resize);
+        document.removeEventListener("visibilitychange", resume);
+        motion.removeEventListener("change", resume);
+        geometries.forEach((geometry) => geometry.dispose());
+        materials.forEach((material) => material.dispose());
+        renderer.dispose();
         renderer.domElement.remove();
       };
     });
     return () => { disposed = true; cleanup(); };
   }, []);
+
   return (
-    <div className="growth-bg pointer-events-none fixed inset-0 -z-10 overflow-hidden" aria-hidden>
-      <img src={growth} alt="" className="growth-backdrop absolute inset-0 h-full w-full object-cover" />
+    <div className="growth-bg pointer-events-none fixed inset-0 -z-10 overflow-hidden" aria-hidden="true">
+      <div ref={host} className="growth-scene absolute inset-0" />
       <div className="growth-overlay absolute inset-0" />
-      <div ref={host} className="absolute inset-0" />
     </div>
   );
 }
