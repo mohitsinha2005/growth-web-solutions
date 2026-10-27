@@ -193,6 +193,8 @@ body { -webkit-font-smoothing: antialiased; }
 .growth-scene { opacity: .85; }
 .growth-overlay { background: linear-gradient(90deg, var(--growth-shade) 0%, color-mix(in oklab, var(--growth-shade) 90%, transparent) 32%, transparent 72%), linear-gradient(0deg, color-mix(in oklab, var(--growth-shade) 75%, transparent), transparent 35%); }
 @media (max-width: 767px) {
+  .reveal-3d { transform: translateY(24px); }
+  .reveal-3d.in-view { transform: none; }
   .growth-scene { opacity: .32; }
   .growth-overlay { background: linear-gradient(180deg, var(--growth-shade), color-mix(in oklab, var(--growth-shade) 35%, transparent)); }
 }
