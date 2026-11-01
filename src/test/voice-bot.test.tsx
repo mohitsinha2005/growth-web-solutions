@@ -1,6 +1,7 @@
 import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { VoiceBot } from "@/components/VoiceBot";
+import { openCustomerChat } from "@/lib/customer-contact";
 
 const controls = vi.hoisted(() => ({ start: vi.fn(), stop: vi.fn(), setMuted: vi.fn(), resumePlayback: vi.fn(), status: "idle" }));
 vi.mock("@/hooks/use-live-voice", () => ({
@@ -15,6 +16,14 @@ beforeEach(() => {
 afterEach(() => { cleanup(); vi.unstubAllGlobals(); });
 
 describe("Nova voice opening", () => {
+  it("opens customer text chat without starting a microphone call", () => {
+    render(<VoiceBot />);
+    fireEvent(window, new Event("techstone:open-customer-chat"));
+    expect(screen.getByRole("dialog", { name: "Nova assistant" })).toBeTruthy();
+    expect(controls.start).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByRole("button", { name: "Close assistant" }));
+    expect(controls.stop).toHaveBeenCalledTimes(1);
+  });
   it("ends active voice before requesting a typed reply", async () => {
     controls.status = "connected";
     const fetchReply = vi.fn(async () => new Response("We can help with your website."));
