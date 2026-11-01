@@ -5,9 +5,11 @@ import { services } from "@/components/services-data";
 export const Route = createFileRoute("/start")({
   head: () => ({
     meta: [
-      { title: "Grow Your Business Online — Brightlane Digital" },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { title: "Grow Your Business Online — Techstone" },
       { name: "description", content: "Get a website, marketing and data plan built for growth. Free consultation and custom quote within 24 hours." },
-      { property: "og:title", content: "Grow Your Business Online — Brightlane Digital" },
+      { property: "og:title", content: "Grow Your Business Online — Techstone" },
       { property: "og:description", content: "Free growth consultation and custom quote within 24 hours." },
     ],
   }),

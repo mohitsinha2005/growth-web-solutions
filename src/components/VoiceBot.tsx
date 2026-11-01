@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useLiveVoice, type LiveEvent } from "@/hooks/use-live-voice";
-import logo from "@/assets/logo.png";
+import { CONTACT_EMAIL, CUSTOMER_CHAT_EVENT } from "@/lib/customer-contact";
+import logo from "@/assets/techstone-logo.png";
 import ReactMarkdown from "react-markdown";
 import { Mic, MicOff, Send, Square, X, Volume2, Headphones } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -9,7 +10,7 @@ type Msg = { role: "user" | "assistant"; content: string };
 
 const GREETING: Msg = {
   role: "assistant",
-  content: "Welcome to our website! I’m Nova from Brightlane Digital. How may I help you today?",
+  content: "Welcome to our website! I’m Nova from Techstone. How may I help you today?",
 };
 const QUICK = ["I need a website", "How can you get me more customers?", "What is data analytics?"];
 
@@ -93,11 +94,17 @@ export function VoiceBot() {
     voice.start();
   }
 
+  useEffect(() => {
+    const openChat = () => { setOpen(true); };
+    window.addEventListener(CUSTOMER_CHAT_EVENT, openChat);
+    return () => window.removeEventListener(CUSTOMER_CHAT_EVENT, openChat);
+  }, []);
+
   return (
     <>
       <audio ref={voice.audioRef} className="hidden" />
       {open && (
-        <div role="dialog" aria-label="Nova assistant" className="chat-panel fixed bottom-24 right-5 z-[60] flex h-[min(560px,calc(100dvh-8rem))] w-[min(380px,calc(100vw-2.5rem))] flex-col overflow-hidden rounded-lg border border-border bg-card/95 shadow-2xl backdrop-blur-xl">
+        <div role="dialog" aria-label="Nova assistant" className="chat-panel fixed bottom-24 right-5 z-[60] flex h-[min(560px,calc(100dvh-8rem))] w-[min(380px,calc(100vw-2.5rem))] flex-col overflow-hidden rounded-lg border border-border bg-card/95 shadow-2xl">
           <div className="flex items-center gap-3 border-b border-border bg-secondary/60 p-4">
             <div className={`relative ${voice.status === "connected" ? "orb-live rounded-xl" : ""}`}>
               <img src={logo} alt="" width={40} height={40} className="h-10 w-10" />
@@ -145,6 +152,7 @@ export function VoiceBot() {
           {voice.playbackBlocked && (
             <Button onClick={voice.resumePlayback} className="mx-3 mb-2"><Volume2 />Play voice</Button>
           )}
+          <a href={`mailto:${CONTACT_EMAIL}`} className="border-t border-border px-4 py-2 text-xs text-accent hover:underline">Email the Techstone team ↗</a>
           <form className="flex items-center gap-2 border-t border-border p-3" onSubmit={(e) => { e.preventDefault(); send(input); }}>
             <Button variant={voiceIdle ? "outline" : "destructive"} size="icon" type="button" aria-label={voiceIdle ? "Start voice chat" : "End voice chat"} title={voiceIdle ? "Start voice chat" : "End voice chat"}
               onClick={() => (voiceIdle ? voice.start() : voice.stop())}

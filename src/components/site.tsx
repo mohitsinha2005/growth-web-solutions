@@ -1,10 +1,11 @@
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
-import logo from "@/assets/logo.png";
+import logo from "@/assets/techstone-logo.png";
 import { Menu, X } from "lucide-react";
+import { COMPANY_NAME, CONTACT_EMAIL } from "@/lib/customer-contact";
 import { Button } from "@/components/ui/button";
 
-export const BRAND = "Brightlane Digital";
+export const BRAND = COMPANY_NAME;
 
 const nav = [
   { to: "/", label: "Home" },
@@ -20,7 +21,7 @@ export function Header() {
     <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
         <Link to="/" onClick={() => setOpen(false)} className="flex min-w-0 items-center gap-2 font-display text-base font-bold sm:text-lg">
-          <img src={logo} alt="Brightlane Digital logo" width={36} height={36} className="h-9 w-9" />
+          <img src={logo} alt="Techstone logo" width={36} height={36} className="h-9 w-9" />
           {BRAND}
         </Link>
         <nav aria-label="Main navigation" className="hidden items-center gap-6 lg:flex">
@@ -64,8 +65,7 @@ export function Footer() {
         <div>
           <p className="font-semibold">Contact</p>
           <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
-            <li>hello@brightlane.digital</li>
-            <li>+91 00000 00000</li>
+            <li><a href={`mailto:${CONTACT_EMAIL}`} className="break-all hover:text-accent">{CONTACT_EMAIL}</a></li>
             <li>Serving clients worldwide</li>
           </ul>
         </div>

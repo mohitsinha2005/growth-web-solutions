@@ -13,3 +13,4 @@
 - Apply site-wide presentation motion through Motion3D and Background3D, with reduced-motion guards, so page components do not manage animation listeners.
 - Keep the entrance screen in the shared root as a temporary overlay with inert site content; it runs once per document load without adding redirects or repeating on internal navigation.
 - Use CSS perspective for the entry screen's decorative growth columns, keeping its short animation lightweight and respecting reduced-motion preferences.
+- Keep customer contact details and the contact-to-assistant event in one browser-safe module so every email action and chat entry uses the same destination.

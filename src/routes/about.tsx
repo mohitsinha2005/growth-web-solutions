@@ -4,9 +4,11 @@ import { CTA } from "@/components/site";
 export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
-      { title: "About Us — Brightlane Digital" },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { title: "About Us — Techstone" },
       { name: "description", content: "A young, global IT startup helping businesses grow with websites, marketing and data." },
-      { property: "og:title", content: "About Us — Brightlane Digital" },
+      { property: "og:title", content: "About Us — Techstone" },
       { property: "og:description", content: "Meet the team helping businesses grow worldwide." },
     ],
   }),
