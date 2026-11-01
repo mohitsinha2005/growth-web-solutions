@@ -4,9 +4,11 @@ import { useState } from "react";
 export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
-      { title: "Contact — Brightlane Digital" },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { title: "Contact — Techstone" },
       { name: "description", content: "Get a free quote for your website, marketing or analytics project." },
-      { property: "og:title", content: "Contact — Brightlane Digital" },
+      { property: "og:title", content: "Contact — Techstone" },
       { property: "og:description", content: "Tell us about your project and get a free quote within 24 hours." },
     ],
   }),
@@ -23,7 +25,7 @@ function Contact() {
         <h1 className="hero-3d text-4xl font-bold md:text-6xl">Let's <span className="text-gradient">talk</span></h1>
         <p className="mt-4 text-lg text-muted-foreground">Share your goals and we'll send a free plan and quote within 24 hours.</p>
         <ul className="mt-8 space-y-4">
-          <li><p className="text-sm text-muted-foreground">Email</p><p className="font-semibold">hello@brightlane.digital</p></li>
+          <li><p className="text-sm text-muted-foreground">Email</p><p className="font-semibold">techstone.in@gmail.com</p></li>
           <li><p className="text-sm text-muted-foreground">Phone / WhatsApp</p><p className="font-semibold">+91 00000 00000</p></li>
           <li><p className="text-sm text-muted-foreground">Clients</p><p className="font-semibold">Worldwide, all time zones</p></li>
         </ul>
