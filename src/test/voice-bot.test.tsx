@@ -15,6 +15,13 @@ beforeEach(() => {
 afterEach(() => { cleanup(); vi.unstubAllGlobals(); });
 
 describe("Nova voice opening", () => {
+  it("does not restart the live call when the open assistant rerenders", () => {
+    const { rerender } = render(<VoiceBot />);
+    fireEvent.click(screen.getByRole("button", { name: "Chat with our AI assistant" }));
+    rerender(<VoiceBot />);
+    fireEvent.change(screen.getByRole("textbox", { name: "Message Nova" }), { target: { value: "Hello" } });
+    expect(controls.start).toHaveBeenCalledTimes(1);
+  });
   it("opens customer text chat without starting a microphone call", () => {
     render(<VoiceBot />);
     fireEvent(window, new Event("techstone:open-customer-chat"));
