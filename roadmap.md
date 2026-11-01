@@ -1,7 +1,7 @@
 # Tasks
-- [ ] Rename the company Techstone and update customer email throughout the website and assistant.
-- [ ] Add contact-page access to customer AI chat and direct email contact.
-- [ ] Add lightweight 3D interactions and verify navigation and customer chat.
+- [x] Rename the company Techstone and update customer email throughout the website and assistant.
+- [x] Add contact-page access to customer AI chat and direct email contact.
+- [x] Add lightweight 3D interactions and verify navigation and customer chat.
 - [x] Add professional 3D animation to the existing three-second entry screen.
 - [x] Refine concise professional live voice responses, prevent overlapping typed replies, and confirm AI calls; free usage is limited.
 - [x] Improve animation efficiency and navigation; checked all five pages, compact menu, scrolling, and five passing tests.
