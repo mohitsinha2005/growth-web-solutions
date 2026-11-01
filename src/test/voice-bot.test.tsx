@@ -1,7 +1,6 @@
 import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { VoiceBot } from "@/components/VoiceBot";
-import { openCustomerChat } from "@/lib/customer-contact";
 
 const controls = vi.hoisted(() => ({ start: vi.fn(), stop: vi.fn(), setMuted: vi.fn(), resumePlayback: vi.fn(), status: "idle" }));
 vi.mock("@/hooks/use-live-voice", () => ({
