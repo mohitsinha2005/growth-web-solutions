@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { createOpenAI } from "@ai-sdk/openai";
+import { openai } from "@ai-sdk/openai";
 import { streamText } from "ai";
 import { z } from "zod";
 
@@ -22,27 +22,14 @@ export const Route = createFileRoute("/api/chat")({
       POST: async ({ request }) => {
         const parsed = Body.safeParse(await request.json().catch(() => null));
         if (!parsed.success) return Response.json({ error: "Invalid request" }, { status: 400 });
-        const key = process.env['LOVABLE_API_KEY'];
-        if (!key) return Response.json({ error: "AI is not configured" }, { status: 500 });
-        const provider = createOpenAI({
-          baseURL: "https://ai.gateway.lovable.dev/v1",
-          apiKey: key,
-          headers: { "Lovable-API-Key": key, "X-Lovable-AIG-SDK": "vercel-ai-sdk" },
-        });
+        // Netlify AI Gateway injects OPENAI_API_KEY and OPENAI_BASE_URL at runtime.
         const result = streamText({
-          model: provider.responses("openai/gpt-6-astra"),
+          model: openai.responses("gpt-5.4-mini"),
           system: SYSTEM,
           messages: parsed.data.messages,
           abortSignal: request.signal,
-          providerOptions: {
-            openai: {
-              forceReasoning: true,
-              reasoningEffort: "low",
-              reasoningSummary: "auto",
-              store: false,
-              include: ["reasoning.encrypted_content"],
-            },
-          },
+          providerOptions: { openai: { store: false } },
+          onError: ({ error }) => console.error("Chat stream failed", error),
         });
         return result.toTextStreamResponse();
       },

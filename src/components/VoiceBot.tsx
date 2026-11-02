@@ -37,7 +37,13 @@ export function VoiceBot() {
       return [...prev, { role, content: delta }];
     });
   }, []);
-  const voice = useLiveVoice({ onEvent });
+  const msgsRef = useRef(msgs);
+  msgsRef.current = msgs;
+  const voice = useLiveVoice({
+    onEvent,
+    greeting: GREETING.content,
+    history: () => msgsRef.current.filter((m) => m !== GREETING && m.content.trim()),
+  });
   const voiceIdle = voice.status === "idle" || voice.status === "closed";
 
   useEffect(() => { endRef.current?.scrollIntoView({ behavior: "smooth" }); }, [msgs, busy]);
@@ -65,12 +71,15 @@ export function VoiceBot() {
       }
       const reader = res.body.getReader();
       const dec = new TextDecoder();
+      let received = "";
       for (;;) {
         const { done, value } = await reader.read();
         if (done) break;
         const chunk = dec.decode(value, { stream: true });
+        received += chunk;
         setMsgs((p) => [...p.slice(0, -1), { role: "assistant", content: (p[p.length - 1]?.content ?? "") + chunk }]);
       }
+      if (!received.trim()) throw new Error("The assistant is unavailable right now.");
     } catch (e) {
       setMsgs((p) => (p[p.length - 1]?.content === "" ? p.slice(0, -1) : p));
       setError(e instanceof Error ? e.message : "Something went wrong.");
@@ -122,7 +131,7 @@ export function VoiceBot() {
             ) : (
               <Headphones className="h-4 w-4 shrink-0 text-accent" />
             )}
-            <p className="flex-1 text-xs text-muted-foreground">{voice.status === "connecting" ? "Allow microphone access to talk with Nova." : voice.status === "connected" ? "Live — just speak, you can interrupt Nova anytime." : "Tap the mic to talk with Nova live."}</p>
+            <p className="flex-1 text-xs text-muted-foreground">{voice.status === "connecting" ? "Allow microphone access to talk with Nova." : voice.status === "connected" ? "Live — just speak, then pause and Nova will reply." : "Tap the mic to talk with Nova live."}</p>
             {voice.status === "connected" && <Button variant="ghost" size="icon" aria-label={voice.muted ? "Unmute microphone" : "Mute microphone"} title={voice.muted ? "Unmute microphone" : "Mute microphone"} onClick={() => voice.setMuted(!voice.muted)}>{voice.muted ? <MicOff /> : <Mic />}</Button>}
           </div>
 

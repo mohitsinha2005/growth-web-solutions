@@ -31,6 +31,8 @@ const initialState: LiveState = {
 export function useLiveVoice(
   options: {
     url?: string;
+    greeting?: string;
+    history?: () => Turn[];
     onEvent?: (event: LiveEvent) => void | Promise<void>;
   } = {},
 ) {
@@ -55,23 +57,17 @@ export function useLiveVoice(
 
   const start = useCallback(() => {
     if (!mounted.current || controller.current) return;
-    const audio = audioRef.current;
-    if (!audio) {
-      setCall((previous) => ({ ...previous, error: "Voice playback is not mounted." }));
-      return;
-    }
     let endpoint: URL;
     try {
-      endpoint = new URL(latest.current.url ?? "/api/live", window.location.href);
-      if (endpoint.protocol === "https:") endpoint.protocol = "wss:";
-      if (endpoint.protocol === "http:") endpoint.protocol = "ws:";
+      endpoint = new URL(latest.current.url ?? "/api/chat", window.location.href);
     } catch {
       setCall((previous) => ({ ...previous, error: "Invalid voice connection URL." }));
       return;
     }
     const voice = createLiveVoice({
       url: endpoint.href,
-      audio,
+      greeting: latest.current.greeting,
+      history: () => latest.current.history?.() ?? [],
       onEvent(event) {
         if (!mounted.current || controller.current !== voice) return;
         if (event.type === "app.connected") {
@@ -119,281 +115,204 @@ export function useLiveVoice(
   return { ...call, audioRef, start, stop, setMuted, resumePlayback };
 }
 
+type Turn = { role: "user" | "assistant"; content: string };
+
 type LiveOptions = {
   url: string;
-  audio: HTMLAudioElement;
+  greeting?: string | undefined;
+  history?: () => Turn[];
   onEvent: (event: LiveEvent) => void;
 };
 
+type Recognition = {
+  lang: string;
+  continuous: boolean;
+  interimResults: boolean;
+  start(): void;
+  abort(): void;
+  onresult: ((event: { results: ArrayLike<ArrayLike<{ transcript: string }> & { isFinal: boolean }> }) => void) | null;
+  onerror: ((event: { error: string }) => void) | null;
+  onend: (() => void) | null;
+};
+
+function speechRecognition(): (new () => Recognition) | undefined {
+  const w = window as unknown as Record<string, (new () => Recognition) | undefined>;
+  return w["SpeechRecognition"] ?? w["webkitSpeechRecognition"];
+}
+
+// Spoken replies should not read Markdown symbols or links aloud.
+function speakable(text: string) {
+  return text
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
+    .replace(/[*_`#>~|]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+// Turn-based voice using the browser's speech recognition and synthesis; replies come from the chat API.
 function createLiveVoice(options: LiveOptions) {
   let state: "idle" | "starting" | "active" | "stopping" | "closed" = "idle";
-  let socket: WebSocket | undefined;
-  let peer: RTCPeerConnection | undefined;
-  let channel: RTCDataChannel | undefined;
-  let microphone: MediaStream | undefined;
-  let playback: MediaStream | undefined;
-  let heartbeat: ReturnType<typeof setInterval> | undefined;
-  let deadline: ReturnType<typeof setTimeout> | undefined;
-  let cancelGathering: (() => void) | undefined;
-  let lastAck = 0;
-  let lastHeartbeat = 0;
-  let answerReceived = false;
-  let finalized = false;
+  let recognition: Recognition | undefined;
+  let listening = false;
+  let busy = false;
   let muted = false;
+  let reply: AbortController | undefined;
+  let history: Turn[] = [];
 
-  function starting() {
-    return state === "starting";
-  }
-
-  function send(event: object) {
-    if (socket?.readyState === WebSocket.OPEN) socket.send(JSON.stringify(event));
-  }
-
-  function stopAudio() {
-    microphone?.getTracks().forEach((track) => track.stop());
-    if (playback && options.audio.srcObject === playback) {
-      options.audio.pause();
-      options.audio.srcObject = null;
-    }
+  function live() {
+    return state === "starting" || state === "active";
   }
 
   function release() {
     if (state === "closed") return;
     state = "closed";
-    clearInterval(heartbeat);
-    clearTimeout(deadline);
-    cancelGathering?.();
     window.removeEventListener("pagehide", stop);
-    stopAudio();
-    channel?.close();
-    peer?.close();
-    socket?.close();
-    options.onEvent({ type: "app.closed", finalized });
+    reply?.abort();
+    if (recognition) {
+      recognition.onend = null;
+      recognition.onresult = null;
+      recognition.onerror = null;
+      recognition.abort();
+    }
+    window.speechSynthesis?.cancel();
+    options.onEvent({ type: "app.closed", finalized: true });
   }
 
   function stop() {
     if (state === "stopping" || state === "closed") return;
     state = "stopping";
-    try {
-      send({ type: "session.close" });
-    } catch {
-      return release();
-    }
-    stopAudio();
-    cancelGathering?.();
-    clearInterval(heartbeat);
-    clearTimeout(deadline);
-    deadline = setTimeout(release, 15_000);
     options.onEvent({ type: "app.stopping" });
-    if (!socket || socket.readyState !== WebSocket.OPEN) release();
-  }
-
-  function setMuted(value: boolean) {
-    if (state !== "starting" && state !== "active") return false;
-    muted = value;
-    microphone?.getAudioTracks().forEach((track) => {
-      track.enabled = !muted;
-    });
-    return true;
-  }
-
-  async function resumePlayback() {
-    if ((state !== "starting" && state !== "active") || !options.audio.srcObject) return;
-    try {
-      await options.audio.play();
-      if (state === "starting" || state === "active") options.onEvent({ type: "app.playback.resumed" });
-    } catch {
-      if (state === "starting" || state === "active") options.onEvent({ type: "app.playback.blocked" });
-    }
+    release();
   }
 
   function fail(message: string) {
-    if (state === "stopping" || state === "closed") return;
+    if (!live()) return;
     options.onEvent({ type: "app.error", error: { message } });
     stop();
   }
 
-  function reportUnexpectedClosure(reason?: string) {
-    if (state === "stopping" || state === "closed") return;
-    const messages: Record<string, string> = {
-      startup_timeout: "Voice startup timed out. Start a new call to retry.",
-      initial_heartbeat_timeout: "Voice media did not connect. Start a new call to retry.",
-      heartbeat_timeout: "Voice connection was lost. Start a new call to retry.",
-      gateway_shutdown: "The voice service restarted. Start a new call to reconnect.",
-      inactivity_timeout: "The voice call ended after inactivity.",
-      duration_limit: "The voice call reached its duration limit. Start a new call to continue.",
-    };
-    options.onEvent({
-      type: "app.error",
-      error: { message: messages[reason ?? ""] ?? "The voice call ended unexpectedly. Start a new call to retry." },
-    });
-  }
-
-  function mediaReady() {
-    return peer?.connectionState === "connected" && channel?.readyState === "open";
-  }
-
-  function pulse() {
-    if (state !== "active") return;
-    if (Date.now() - lastAck >= 5000) return fail("Voice control connection lost");
-    if (Date.now() - lastHeartbeat >= 5000) return fail("Voice media connection lost");
-    if (!mediaReady()) return;
+  function listen() {
+    if (state !== "active" || busy || muted || listening || !recognition) return;
     try {
-      send({ type: "gateway.heartbeat" });
-      lastHeartbeat = Date.now();
+      recognition.start();
+      listening = true;
     } catch {
-      fail("Voice control connection failed");
+      // start() throws if recognition is already running; onend will resume listening.
     }
   }
 
-  function activate() {
-    if (!answerReceived || !mediaReady()) return;
-    if (starting()) {
-      state = "active";
-      clearTimeout(deadline);
-      lastAck = Date.now();
-      lastHeartbeat = Date.now();
-      heartbeat = setInterval(pulse, 1000);
-      pulse();
-      if (state !== "active") return;
-      send({ type: "app.ready" });
-      options.onEvent({ type: "app.connected" });
-    } else pulse();
-  }
-
-  async function applyAnswer(event: LiveEvent) {
-    if (!starting() || !peer) return;
-    if (answerReceived || event.transport?.type !== "webrtc" || !event.transport.sdp) {
-      throw new Error("Invalid voice session answer");
-    }
-    answerReceived = true;
-    clearTimeout(deadline);
-    deadline = setTimeout(
-      () => fail("Voice media did not connect within 12 seconds. Start a new call to retry."),
-      12_000,
-    );
-    await peer.setRemoteDescription({ type: "answer", sdp: event.transport.sdp });
-    activate();
-  }
-
-  async function gatherCandidates(connection: RTCPeerConnection) {
-    if (connection.iceGatheringState === "complete") return;
-    await new Promise<void>((resolve, reject) => {
-      const timeout = setTimeout(() => finish(new Error("Voice network setup timed out")), 10_000);
-      function finish(error?: Error) {
-        clearTimeout(timeout);
-        connection.removeEventListener("icegatheringstatechange", changed);
-        cancelGathering = undefined;
-        if (error) reject(error);
-        else resolve();
-      }
-      function changed() {
-        if (connection.iceGatheringState === "complete") finish();
-      }
-      cancelGathering = () => finish(new Error("Call ended"));
-      connection.addEventListener("icegatheringstatechange", changed);
-      changed();
+  function speak(text: string) {
+    return new Promise<void>((resolve) => {
+      const synth = window.speechSynthesis;
+      const spoken = speakable(text);
+      if (!synth || !spoken || !live()) return resolve();
+      const utterance = new SpeechSynthesisUtterance(spoken);
+      utterance.lang = recognition?.lang ?? navigator.language;
+      utterance.onend = () => resolve();
+      utterance.onerror = () => resolve();
+      synth.cancel();
+      synth.speak(utterance);
     });
+  }
+
+  async function answer(content: string) {
+    busy = true;
+    history = [...history, { role: "user" as const, content }].slice(-30);
+    options.onEvent({ type: "session.input_transcript.delta", delta: content });
+    reply = new AbortController();
+    let text = "";
+    try {
+      const res = await fetch(options.url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ messages: history }),
+        signal: reply.signal,
+      });
+      if (!res.ok || !res.body) {
+        const body = (await res.json().catch(() => ({}))) as { error?: string };
+        throw new Error(body.error || "Nova could not answer right now.");
+      }
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      for (;;) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        const delta = decoder.decode(value, { stream: true });
+        if (!delta || !live()) continue;
+        text += delta;
+        options.onEvent({ type: "session.output_transcript.delta", delta });
+      }
+      if (!text.trim()) throw new Error("Nova could not answer right now.");
+      history = [...history, { role: "assistant" as const, content: text }];
+      await speak(text);
+    } catch (error) {
+      if (live()) fail(error instanceof Error ? error.message : "Nova could not answer right now.");
+      return;
+    } finally {
+      busy = false;
+      reply = undefined;
+    }
+    listen();
+  }
+
+  function setMuted(value: boolean) {
+    if (!live()) return false;
+    muted = value;
+    if (muted && listening) recognition?.abort();
+    else listen();
+    return true;
+  }
+
+  async function resumePlayback() {
+    window.speechSynthesis?.resume();
+    if (live()) options.onEvent({ type: "app.playback.resumed" });
   }
 
   async function start() {
     if (state !== "idle") return;
     state = "starting";
     window.addEventListener("pagehide", stop);
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        audio: { echoCancellation: true, noiseSuppression: true },
-      });
-      microphone = stream;
-      if (!starting()) {
-        stream.getTracks().forEach((track) => track.stop());
-        return;
-      }
-      const connection = new RTCPeerConnection();
-      peer = connection;
-      for (const track of stream.getAudioTracks()) {
-        track.enabled = !muted;
-        track.addEventListener("ended", stop);
-        connection.addTrack(track, stream);
-      }
-      connection.addEventListener("track", ({ track }) => {
-        if (state === "stopping" || state === "closed") return;
-        playback = new MediaStream([track]);
-        options.audio.srcObject = playback;
-        void resumePlayback();
-      });
-      connection.addEventListener("connectionstatechange", () => {
-        if (connection.connectionState === "failed") fail("Voice media connection failed. Start a new call to retry.");
-        else if (connection.connectionState === "closed") fail("Voice media connection closed");
-        else activate();
-      });
-      channel = connection.createDataChannel("oai-events");
-      channel.addEventListener("open", activate);
-      channel.addEventListener("message", ({ data }) => {
-        try {
-          const event: LiveEvent = JSON.parse(data);
-          if (event.type === "session.started") {
-            activate();
-          }
-        } catch {
-          fail("Invalid voice session event");
-        }
-      });
-      channel.addEventListener("error", () => fail("Voice media connection failed"));
-      channel.addEventListener("close", stop);
-      await connection.setLocalDescription(await connection.createOffer());
-      if (!starting()) return;
-      await gatherCandidates(connection);
-      if (!starting()) return;
-      const sdp = connection.localDescription?.sdp;
-      if (!sdp) throw new Error("Missing voice session offer");
-      socket = new WebSocket(options.url);
-      deadline = setTimeout(() => fail("Voice session did not start"), 50_000);
-      socket.onopen = () => {
-        if (!starting()) return release();
-        send({ type: "app.start", sdp });
-      };
-      socket.onmessage = ({ data }) => {
-        try {
-          const event: LiveEvent = JSON.parse(data);
-          if (event.type === "gateway.session.created") {
-            void applyAnswer(event).catch(() => fail("Voice media negotiation failed"));
-          } else if (event.type === "session.started") {
-            activate();
-          } else if (event.type === "gateway.heartbeat.ack") {
-            lastAck = Date.now();
-          } else if (event.type === "session.closed") {
-            finalized =
-              typeof event.usage?.seconds === "number" &&
-              Number.isFinite(event.usage.seconds) &&
-              event.usage.seconds >= 0;
-            reportUnexpectedClosure(event.reason);
-            options.onEvent(event);
-            return release();
-          } else if (
-            event.type === "gateway.session.closing" ||
-            event.type === "gateway.error" ||
-            event.type === "app.error"
-          ) {
-            if (event.type === "gateway.session.closing") reportUnexpectedClosure(event.reason);
-            options.onEvent(event);
-            return stop();
-          }
-          options.onEvent(event);
-        } catch {
-          fail("Invalid voice event");
-        }
-      };
-      socket.onerror = () => fail("Voice connection failed");
-      socket.onclose = () => {
-        if (state !== "stopping" && state !== "closed") {
-          options.onEvent({ type: "app.error", error: { message: "Voice control connection closed" } });
-        }
-        release();
-      };
-    } catch (error) {
-      fail(error instanceof Error ? error.message : "Microphone startup failed");
+    const Recognition = speechRecognition();
+    if (!Recognition || !window.speechSynthesis) {
+      return fail("Voice chat isn't supported in this browser. You can still type below.");
     }
+    try {
+      // Ask for the microphone up front so a denied permission is reported clearly.
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      stream.getTracks().forEach((track) => track.stop());
+    } catch {
+      return fail("Microphone access was blocked. Allow it to talk with Nova, or type below.");
+    }
+    if (!live()) return;
+    history = (options.history?.() ?? []).slice(-30);
+    recognition = new Recognition();
+    recognition.lang = navigator.language || "en-US";
+    recognition.continuous = false;
+    recognition.interimResults = false;
+    recognition.onresult = (event) => {
+      const transcript = Array.from(event.results)
+        .filter((result) => result.isFinal)
+        .map((result) => result[0]?.transcript ?? "")
+        .join(" ")
+        .trim();
+      if (transcript && !busy && state === "active") void answer(transcript);
+    };
+    recognition.onerror = (event) => {
+      if (event.error === "not-allowed" || event.error === "service-not-allowed") {
+        fail("Microphone access was blocked. Allow it to talk with Nova, or type below.");
+      } else if (event.error === "network") {
+        fail("Voice recognition lost its connection. Start a new call to retry.");
+      }
+      // "no-speech" and "aborted" simply end this turn; onend resumes listening.
+    };
+    recognition.onend = () => {
+      listening = false;
+      listen();
+    };
+    state = "active";
+    options.onEvent({ type: "app.connected" });
+    if (options.greeting) await speak(options.greeting);
+    listen();
   }
 
   return { start, stop, setMuted, resumePlayback };
