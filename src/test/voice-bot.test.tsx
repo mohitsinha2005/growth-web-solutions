@@ -15,6 +15,16 @@ beforeEach(() => {
 afterEach(() => { cleanup(); vi.unstubAllGlobals(); });
 
 describe("Nova voice opening", () => {
+  it("lets the client review and edit an enquiry before opening their email app", () => {
+    render(<VoiceBot />);
+    fireEvent(window, new Event("techstone:open-customer-chat"));
+    fireEvent.click(screen.getByRole("button", { name: "Draft client email" }));
+    fireEvent.change(screen.getByRole("textbox", { name: "Message" }), { target: { value: "Please contact me about my website." } });
+    const link = screen.getByRole("link", { name: "Open email draft" });
+    expect(link.getAttribute("href")).toContain("mailto:techstone.in@gmail.com?");
+    expect(decodeURIComponent(link.getAttribute("href") ?? "")).toContain("Please contact me about my website.");
+    expect(controls.stop).toHaveBeenCalledTimes(1);
+  });
   it("does not restart the live call when the open assistant rerenders", () => {
     const { rerender } = render(<VoiceBot />);
     fireEvent.click(screen.getByRole("button", { name: "Chat with our AI assistant" }));
