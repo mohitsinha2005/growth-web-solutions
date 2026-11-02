@@ -1,4 +1,5 @@
 # Tasks
+- [ ] Clean up Nova’s chat and voice controls, add editable client enquiry email drafts, and subtle reduced-motion-safe 2D effects; verify the customer flow.
 - [x] Refine Nova’s Techstone welcome and professional, concise live conversation instructions; preserve automatic opening and call cleanup.
 - [x] Rename the company Techstone and update customer email throughout the website and assistant.
 - [x] Add contact-page access to customer AI chat and direct email contact.
