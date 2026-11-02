@@ -139,10 +139,17 @@ export function VoiceBot() {
               </div>
             ))}
             {msgs.length === 1 && (
-              <div className="flex flex-wrap gap-2 pt-1">
-                {QUICK.map((q) => (
-                  <Button variant="outline" size="sm" key={q} onClick={() => send(q)} className="h-auto whitespace-normal text-left">{q}</Button>
-                ))}
+              <div className="space-y-3 pt-1">
+                {voiceIdle && (
+                  <Button onClick={() => voice.start()} className="w-full">
+                    <Mic />Talk with Nova live
+                  </Button>
+                )}
+                <div className="flex flex-wrap gap-2">
+                  {QUICK.map((q) => (
+                    <Button variant="outline" size="sm" key={q} onClick={() => send(q)} className="h-auto whitespace-normal text-left">{q}</Button>
+                  ))}
+                </div>
               </div>
             )}
             {(error || voice.error) && <p role="alert" className="text-destructive">{error || voice.error}</p>}
