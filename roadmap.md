@@ -1,5 +1,6 @@
 # Tasks
-- [ ] Clean up Nova’s chat and voice controls, add editable client enquiry email drafts, and subtle reduced-motion-safe 2D effects; verify the customer flow.
+- [x] Clean up Nova’s chat and voice controls, add editable client enquiry email drafts, and subtle reduced-motion-safe 2D effects; verified editing, destination, compact layout and eleven tests.
+- [ ] Restore real AI replies: existing chat provider’s OPENAI_API_KEY is missing; live test returned no reply. Provider configuration needs restoring before spoken AI replies can be verified.
 - [x] Refine Nova’s Techstone welcome and professional, concise live conversation instructions; preserve automatic opening and call cleanup.
 - [x] Rename the company Techstone and update customer email throughout the website and assistant.
 - [x] Add contact-page access to customer AI chat and direct email contact.
