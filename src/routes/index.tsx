@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { CTA, services } from "@/components/site";
+import { Showreel } from "@/components/Showreel";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -59,6 +60,8 @@ function Index() {
           ))}
         </div>
       </section>
+
+      <Showreel />
 
       <section className="mx-auto max-w-6xl px-6 py-20">
         <h2 className="text-3xl font-bold md:text-4xl">Everything you need to grow online</h2>
