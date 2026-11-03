@@ -3,6 +3,7 @@
 - [ ] Restore real AI replies: existing chat provider’s OPENAI_API_KEY is missing; live test returned no reply. Provider configuration needs restoring before spoken AI replies can be verified.
 - [x] Refine Nova’s Techstone welcome and professional, concise live conversation instructions; preserve automatic opening and call cleanup.
 - [x] Rename the company Techstone and update customer email throughout the website and assistant.
+- [x] Rename the company to Bitfarm (email bitfarm.help@gmail.com) with a new logo and favicon across pages, AI prompts and tests.
 - [x] Add contact-page access to customer AI chat and direct email contact.
 - [x] Add lightweight 3D interactions and verify navigation and customer chat.
 - [x] Add professional 3D animation to the existing three-second entry screen.
