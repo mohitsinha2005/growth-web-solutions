@@ -7,9 +7,9 @@ export const Route = createFileRoute("/start")({
     meta: [
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { title: "Grow Your Business Online — Techstone" },
+      { title: "Grow Your Business Online — Bitfarm" },
       { name: "description", content: "Get a website, marketing and data plan built for growth. Free consultation and custom quote within 24 hours." },
-      { property: "og:title", content: "Grow Your Business Online — Techstone" },
+      { property: "og:title", content: "Grow Your Business Online — Bitfarm" },
       { property: "og:description", content: "Free growth consultation and custom quote within 24 hours." },
     ],
   }),

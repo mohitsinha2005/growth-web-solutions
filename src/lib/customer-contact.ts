@@ -1,6 +1,6 @@
-export const COMPANY_NAME = "Techstone";
-export const CONTACT_EMAIL = "techstone.in@gmail.com";
-export const CUSTOMER_CHAT_EVENT = "techstone:open-customer-chat";
+export const COMPANY_NAME = "Bitfarm";
+export const CONTACT_EMAIL = "bitfarm.help@gmail.com";
+export const CUSTOMER_CHAT_EVENT = "bitfarm:open-customer-chat";
 
 export function createEnquiryDraft(turns: { role: "user" | "assistant"; content: string }[]) {
   const requests = turns.filter((turn) => turn.role === "user" && turn.content.trim());

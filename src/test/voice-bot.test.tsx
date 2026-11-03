@@ -17,11 +17,11 @@ afterEach(() => { cleanup(); vi.unstubAllGlobals(); });
 describe("Nova voice opening", () => {
   it("lets the client review and edit an enquiry before opening their email app", () => {
     render(<VoiceBot />);
-    fireEvent(window, new Event("techstone:open-customer-chat"));
+    fireEvent(window, new Event("bitfarm:open-customer-chat"));
     fireEvent.click(screen.getByRole("button", { name: "Draft client email" }));
     fireEvent.change(screen.getByRole("textbox", { name: "Message" }), { target: { value: "Please contact me about my website." } });
     const link = screen.getByRole("link", { name: "Open email draft" });
-    expect(link.getAttribute("href")).toContain("mailto:techstone.in@gmail.com?");
+    expect(link.getAttribute("href")).toContain("mailto:bitfarm.help@gmail.com?");
     expect(decodeURIComponent(link.getAttribute("href") ?? "")).toContain("Please contact me about my website.");
     expect(controls.stop).toHaveBeenCalledTimes(1);
   });
@@ -34,7 +34,7 @@ describe("Nova voice opening", () => {
   });
   it("opens customer text chat without starting a microphone call", () => {
     render(<VoiceBot />);
-    fireEvent(window, new Event("techstone:open-customer-chat"));
+    fireEvent(window, new Event("bitfarm:open-customer-chat"));
     expect(screen.getByRole("dialog", { name: "Nova assistant" })).toBeTruthy();
     expect(controls.start).not.toHaveBeenCalled();
     fireEvent.click(screen.getByRole("button", { name: "Close assistant" }));

@@ -6,9 +6,9 @@ export const Route = createFileRoute("/")({
     meta: [
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { title: "Techstone — Websites, Marketing & Analytics" },
+      { title: "Bitfarm — Websites, Marketing & Analytics" },
       { name: "description", content: "We build websites, run digital marketing and deliver data analytics that help businesses worldwide grow." },
-      { property: "og:title", content: "Techstone — Websites, Marketing & Analytics" },
+      { property: "og:title", content: "Bitfarm — Websites, Marketing & Analytics" },
       { property: "og:description", content: "Websites, marketing and analytics for business growth, worldwide." },
     ],
   }),
@@ -39,7 +39,7 @@ function Index() {
           <div className="max-w-2xl">
             <span className="rounded-full border border-border px-3 py-1 text-xs text-accent">IT services for businesses worldwide</span>
             <h1 className="hero-3d mt-6 text-4xl font-bold leading-tight md:text-6xl">
-              Techstone <span className="text-gradient">Digital growth, built right.</span>
+              Bitfarm <span className="text-gradient">Digital growth, built right.</span>
             </h1>
             <p className="mt-6 max-w-lg text-lg text-muted-foreground">
               Professional websites, digital marketing and data analytics — one team, one plan, real results.
