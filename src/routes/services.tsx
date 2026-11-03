@@ -6,9 +6,9 @@ export const Route = createFileRoute("/services")({
     meta: [
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { title: "Services — Techstone" },
+      { title: "Services — Bitfarm" },
       { name: "description", content: "Website development, digital marketing, data analytics and IT support for businesses in every country." },
-      { property: "og:title", content: "Services — Techstone" },
+      { property: "og:title", content: "Services — Bitfarm" },
       { property: "og:description", content: "Websites, marketing, analytics and IT support under one roof." },
     ],
   }),

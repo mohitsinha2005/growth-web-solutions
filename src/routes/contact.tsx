@@ -9,9 +9,9 @@ export const Route = createFileRoute("/contact")({
     meta: [
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { title: "Contact — Techstone" },
+      { title: "Contact — Bitfarm" },
       { name: "description", content: "Get a free quote for your website, marketing or analytics project." },
-      { property: "og:title", content: "Contact — Techstone" },
+      { property: "og:title", content: "Contact — Bitfarm" },
       { property: "og:description", content: "Tell us about your project and get a free quote within 24 hours." },
     ],
   }),
@@ -54,7 +54,7 @@ function Contact() {
             e.preventDefault();
             const data = new FormData(e.currentTarget);
             const body = `Name: ${data.get("name")}\nEmail: ${data.get("email")}\nCompany & country: ${data.get("company")}\nService: ${data.get("service")}\n\n${data.get("message")}`;
-            window.location.href = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent("Techstone project enquiry")}&body=${encodeURIComponent(body)}`;
+            window.location.href = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent("Bitfarm project enquiry")}&body=${encodeURIComponent(body)}`;
             setSent(true);
           }}>
             <input name="name" aria-label="Your name" required placeholder="Your name" className={field} />

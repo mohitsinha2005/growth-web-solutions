@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useLiveVoice, type LiveEvent } from "@/hooks/use-live-voice";
 import { CONTACT_EMAIL, CUSTOMER_CHAT_EVENT, createEnquiryDraft, enquiryEmailLink } from "@/lib/customer-contact";
-import logo from "@/assets/techstone-logo.png";
+import logo from "@/assets/bitfarm-logo.png";
 import ReactMarkdown from "react-markdown";
 import { Mic, MicOff, Send, Square, X, Volume2, MessageSquare, Mail, ArrowLeft, Copy, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -10,7 +10,7 @@ type Msg = { role: "user" | "assistant"; content: string };
 
 const GREETING: Msg = {
   role: "assistant",
-  content: "Welcome to Techstone! I’m Nova, your AI assistant. How can I help you today?",
+  content: "Welcome to Bitfarm! I’m Nova, your AI assistant. How can I help you today?",
 };
 const QUICK = ["I need a website", "How can you get me more customers?", "What is data analytics?"];
 
@@ -122,7 +122,7 @@ export function VoiceBot() {
   const voiceLabel =
     voice.status === "connecting" ? "Connecting voice…" :
     voice.status === "connected" ? (voice.muted ? "Microphone muted" : "Voice conversation active") :
-    voice.status === "stopping" ? "Ending voice…" : voice.error ? "Voice unavailable" : busy ? "Nova is thinking…" : "Techstone · AI assistant";
+    voice.status === "stopping" ? "Ending voice…" : voice.error ? "Voice unavailable" : busy ? "Nova is thinking…" : "Bitfarm · AI assistant";
 
   function toggleAssistant() {
     if (open) {
@@ -221,7 +221,7 @@ export function VoiceBot() {
           {voice.playbackBlocked && (
             <Button onClick={voice.resumePlayback} className="mx-3 mb-2"><Volume2 />Play voice</Button>
           )}
-          <a href={`mailto:${CONTACT_EMAIL}`} className="border-t border-border px-4 py-2 text-xs text-accent hover:underline">Email the Techstone team ↗</a>
+          <a href={`mailto:${CONTACT_EMAIL}`} className="border-t border-border px-4 py-2 text-xs text-accent hover:underline">Email the Bitfarm team ↗</a>
           <form className="flex items-center gap-2 border-t border-border p-3" onSubmit={(e) => { e.preventDefault(); send(input); }}>
             <Button variant={voiceIdle ? "outline" : "destructive"} size="icon" type="button" aria-label={voiceIdle ? "Start voice chat" : "End voice chat"} title={voiceIdle ? "Start voice chat" : "End voice chat"}
               onClick={() => (voiceIdle ? voice.start() : voice.stop())}
