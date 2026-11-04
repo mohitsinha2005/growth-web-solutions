@@ -5,9 +5,11 @@ import { services } from "@/components/services-data";
 export const Route = createFileRoute("/start")({
   head: () => ({
     meta: [
-      { title: "Grow Your Business Online — Brightlane Digital" },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { title: "Grow Your Business Online — Bitfarm" },
       { name: "description", content: "Get a website, marketing and data plan built for growth. Free consultation and custom quote within 24 hours." },
-      { property: "og:title", content: "Grow Your Business Online — Brightlane Digital" },
+      { property: "og:title", content: "Grow Your Business Online — Bitfarm" },
       { property: "og:description", content: "Free growth consultation and custom quote within 24 hours." },
     ],
   }),
@@ -34,7 +36,7 @@ function Landing() {
   return (
     <>
       <section className="mx-auto max-w-6xl px-6 py-20 text-center md:py-28">
-        <span className="rounded-full border border-border bg-card/60 px-4 py-1.5 text-xs text-accent backdrop-blur">Free growth consultation · Reply in 24h</span>
+        <span className="rounded-full border border-border bg-card/60 px-4 py-1.5 text-xs text-accent">Free growth consultation · Reply in 24h</span>
         <h1 className="hero-3d mx-auto mt-6 max-w-4xl text-4xl font-bold leading-tight md:text-7xl">
           Turn your business into a <span className="text-gradient">growth machine</span>
         </h1>
@@ -66,7 +68,7 @@ function Landing() {
         <h2 className="text-center text-3xl font-bold md:text-4xl">12 services. One growth partner.</h2>
         <div className="mt-10 flex flex-wrap justify-center gap-3">
           {services.map((s) => (
-            <span key={s.title} className="chip-3d flex items-center gap-2 rounded-full border border-border bg-card/60 px-4 py-2 text-sm backdrop-blur">
+            <span key={s.title} className="chip-3d flex items-center gap-2 rounded-full border border-border bg-card/60 px-4 py-2 text-sm">
               <s.icon size={16} className="text-accent" />{s.title}
             </span>
           ))}

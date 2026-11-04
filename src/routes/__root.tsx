@@ -16,6 +16,7 @@ import { Header, Footer } from "@/components/site";
 import { Background3D } from "@/components/Background3D";
 import { Motion3D } from "@/components/Motion3D";
 import { VoiceBot } from "@/components/VoiceBot";
+import { WelcomeScreen } from "@/components/WelcomeScreen";
 
 function NotFoundComponent() {
   return (
@@ -82,7 +83,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Brightlane Digital" },
+      { title: "Bitfarm" },
       { name: "description", content: "Websites, marketing and data analytics for business growth." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -119,12 +120,14 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <WelcomeScreen>
       <Background3D />
       <Header />
       <main><Outlet /></main>
       <Footer />
       <Motion3D />
       <VoiceBot />
+      </WelcomeScreen>
     </QueryClientProvider>
   );
 }
