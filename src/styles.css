@@ -205,6 +205,8 @@ body { -webkit-font-smoothing: antialiased; }
   0%, 100% { box-shadow: 0 0 0 0 oklch(0.64 0.19 255 / 0.45); }
   50% { box-shadow: 0 0 0 18px oklch(0.64 0.19 255 / 0); }
 }
+.showreel-spinner { animation: showreel-spin 0.9s linear infinite; filter: drop-shadow(0 2px 8px oklch(0.1 0.03 255 / 0.6)); }
+@keyframes showreel-spin { to { transform: rotate(360deg); } }
 @media (prefers-reduced-motion: reduce) {
   .showreel-play-ring { animation: none; }
 }
