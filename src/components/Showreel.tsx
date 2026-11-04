@@ -6,7 +6,7 @@ import posterAsset from "@/assets/bitfarm-company-profile-poster.jpg.asset.json"
 // Company profile video with a professional click-to-play cover.
 // The video preloads quietly when the section scrolls into view (or the
 // visitor hovers the frame), so pressing play starts instantly.
-export function Showreel() {
+export function Showreel({ compact = false }: { compact?: boolean }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const frameRef = useRef<HTMLDivElement>(null);
   const [playing, setPlaying] = useState(false);
@@ -46,18 +46,18 @@ export function Showreel() {
   };
 
   return (
-    <section className="mx-auto max-w-6xl px-6 py-20">
-      <div className="mx-auto max-w-2xl text-center">
+    <section className={compact ? "w-full" : "mx-auto max-w-6xl px-6 py-20"}>
+      {!compact && <div className="mx-auto max-w-2xl text-center">
         <span className="rounded-full border border-border px-3 py-1 text-xs text-accent">Company profile</span>
         <h2 className="mt-4 text-3xl font-bold md:text-4xl">See Bitfarm in action</h2>
         <p className="mt-3 text-muted-foreground">
           A short film about who we are, what we build and how we help businesses grow.
         </p>
-      </div>
+      </div>}
       <div
         ref={frameRef}
         onPointerEnter={warmUp}
-        className="card-lift showreel-frame relative mx-auto mt-10 max-w-4xl overflow-hidden rounded-2xl border border-border"
+        className={`card-lift showreel-frame relative mx-auto ${compact ? "" : "mt-10"} max-w-4xl overflow-hidden rounded-2xl border border-border`}
       >
         <video
           ref={videoRef}

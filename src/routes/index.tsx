@@ -36,7 +36,7 @@ function Index() {
   return (
     <>
       <section className="bg-glow relative isolate overflow-hidden">
-        <div className="mx-auto grid max-w-6xl items-center gap-12 px-6 py-20 md:py-36">
+        <div className="mx-auto grid max-w-6xl items-center gap-12 px-6 py-16 md:py-24 lg:grid-cols-2">
           <div className="max-w-2xl">
             <span className="rounded-full border border-border px-3 py-1 text-xs text-accent">IT services for businesses worldwide</span>
             <h1 className="hero-3d mt-6 text-4xl font-bold leading-tight md:text-6xl">
@@ -50,6 +50,7 @@ function Index() {
               <Link to="/services" className="btn-ghost">Our services</Link>
             </div>
           </div>
+          <Showreel compact />
         </div>
       </section>
 
@@ -60,8 +61,6 @@ function Index() {
           ))}
         </div>
       </section>
-
-      <Showreel />
 
       <section className="mx-auto max-w-6xl px-6 py-20">
         <h2 className="text-3xl font-bold md:text-4xl">Everything you need to grow online</h2>
