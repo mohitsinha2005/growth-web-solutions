@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Loader2, Play } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import videoAsset from "@/assets/bitfarm-company-profile.mp4.asset.json";
 import posterAsset from "@/assets/bitfarm-company-profile-poster.jpg.asset.json";
 
@@ -11,6 +12,8 @@ export function Showreel({ compact = false }: { compact?: boolean }) {
   const frameRef = useRef<HTMLDivElement>(null);
   const [playing, setPlaying] = useState(false);
   const [buffering, setBuffering] = useState(false);
+  const [started, setStarted] = useState(false);
+  const [error, setError] = useState(false);
 
   // Start loading the video as soon as the section is near the viewport.
   useEffect(() => {
@@ -39,10 +42,19 @@ export function Showreel({ compact = false }: { compact?: boolean }) {
     }
   };
 
-  const start = () => {
-    setPlaying(true);
+  const start = async () => {
+    const video = videoRef.current;
+    if (!video) return;
+    setError(false);
+    setStarted(true);
     setBuffering(true);
-    videoRef.current?.play();
+    try {
+      await video.play();
+    } catch {
+      setStarted(false);
+      setBuffering(false);
+      setError(true);
+    }
   };
 
   return (
@@ -57,34 +69,44 @@ export function Showreel({ compact = false }: { compact?: boolean }) {
       <div
         ref={frameRef}
         onPointerEnter={warmUp}
-        className={`card-lift showreel-frame relative mx-auto ${compact ? "" : "mt-10"} max-w-4xl overflow-hidden rounded-2xl border border-border`}
+        className={`showreel-frame relative mx-auto ${compact ? "" : "mt-10"} max-w-4xl overflow-hidden rounded-lg border border-border bg-card`}
       >
+        <div className="relative aspect-video w-full overflow-hidden bg-background">
         <video
           ref={videoRef}
           src={videoAsset.url}
           poster={posterAsset.url}
-          controls={playing}
+          controls={started}
           preload="metadata"
           playsInline
-          className="aspect-video w-full bg-black object-cover"
+          className="block h-full w-full object-contain"
           onPause={() => setPlaying(false)}
           onPlay={() => setPlaying(true)}
           onPlaying={() => setBuffering(false)}
           onWaiting={() => setBuffering(true)}
           onCanPlay={() => setBuffering(false)}
+          onError={() => { setBuffering(false); setError(true); }}
         />
-        {!playing && (
-          <button
+        {!started && (
+          <Button
             type="button"
             onClick={start}
+            variant="ghost"
             aria-label="Play the Bitfarm company profile video"
-            className="showreel-play absolute inset-0 flex items-center justify-center"
+            className="showreel-play absolute inset-0 h-full w-full items-end justify-end rounded-none p-4 hover:bg-transparent focus-visible:ring-inset"
           >
-            <span className="showreel-play-ring flex h-20 w-20 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg transition-transform hover:scale-110">
-              <Play size={32} fill="currentColor" className="ml-1" />
+            <span className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg">
+              <Play size={20} fill="currentColor" className="ml-0.5" />
             </span>
-          </button>
+          </Button>
         )}
+        </div>
+        <div className="flex min-h-12 items-center justify-between gap-3 border-t border-border px-4 py-3 text-xs">
+          <span className="font-semibold text-foreground">Company profile</span>
+          <span className="text-muted-foreground" role={error ? "alert" : undefined}>
+            {error ? "Unable to play. Please try again." : "Bitfarm"}
+          </span>
+        </div>
         {playing && buffering && (
           <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
             <Loader2 size={44} className="showreel-spinner text-primary-foreground" aria-label="Video is loading" />
