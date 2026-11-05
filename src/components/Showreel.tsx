@@ -74,8 +74,8 @@ export function Showreel({ compact = false }: { compact?: boolean }) {
         <div className="relative aspect-video w-full overflow-hidden bg-background">
         <video
           ref={videoRef}
-          src={videoAsset.url}
-          poster={posterAsset.url}
+          src={new URL(videoAsset.url, "https://global-growth-hub-26.lovable.app").href}
+          poster={new URL(posterAsset.url, "https://global-growth-hub-26.lovable.app").href}
           controls={started}
           preload="metadata"
           playsInline

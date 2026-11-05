@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { CTA, services } from "@/components/site";
 import { Showreel } from "@/components/Showreel";
+import { COMPANY_FACTS, RESPONSE_PROMISE } from "@/lib/company-facts";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -16,7 +17,7 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
-const stats = [["120+", "Projects delivered"], ["25+", "Countries served"], ["3x", "Average lead growth"], ["24h", "Response time"]];
+const stats = [[`${COMPANY_FACTS.projectsDelivered}+`, "Projects delivered"], [`${COMPANY_FACTS.countriesServed}`, "Countries served"], ["3x", "Average lead growth"], [`${COMPANY_FACTS.maximumResponseHours}h max`, "Response time"]];
 const steps = [
   ["01", "Discover", "We learn your business, customers and goals."],
   ["02", "Plan", "A clear roadmap, timeline and fixed price."],
@@ -27,7 +28,7 @@ const industries = ["Retail & E-commerce", "Healthcare", "Education", "Real Esta
 const faqs = [
   ["Do you work with clients outside my country?", "Yes. We work remotely with businesses in every country and adjust meetings to your time zone."],
   ["How long does a website take?", "Most business websites are ready in 2–4 weeks, depending on pages and features."],
-  ["How much will my project cost?", "Every project is different. Share your goals and we send a free custom quote within 24 hours."],
+  ["How much will my project cost?", `Every project is different. Share your goals for a free custom quote. ${RESPONSE_PROMISE}`],
   ["Do you offer support after launch?", "Yes. We provide maintenance, updates, marketing and analytics support plans."],
   ["Can I talk to your AI assistant?", "Yes. Click “Ask AI” and talk with Nova by voice or text, anytime."],
 ];

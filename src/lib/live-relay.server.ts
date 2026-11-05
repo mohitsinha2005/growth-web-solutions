@@ -2,6 +2,7 @@ import { createOpenAI } from "@ai-sdk/openai";
 import { stepCountIs, streamText, tool, type ModelMessage } from "ai";
 import process from "node:process";
 import { z } from "zod";
+import { COMPANY_FACTS, RESPONSE_PROMISE } from "@/lib/company-facts";
 
 export type LiveConfig = {
   baseURL: string;
@@ -118,7 +119,7 @@ Customer contact email: bitfarm.help@gmail.com. Customers can email the team dir
 Speak like a thoughtful business copilot: warm, calm, confident and professional, never pushy. Start with the configured Bitfarm welcome, then listen without repeating the greeting during the call. Pronounce Bitfarm as bit-farm. Use short natural sentences, not spoken bullet lists. Ask one relevant question at a time and pause for the visitor. Match their pace. Always reply only in English, even if the visitor speaks another language or asks you to switch languages. Understand their request and answer in clear English; do not mirror non-English conversation history. When a detail is unclear, ask rather than guessing. Ignore ambient speech and background noise; do not answer unless the visitor addresses you. Acknowledge frustration briefly and offer a practical next step.
 For everyday questions, give the useful answer immediately in one or two sentences, then listen. Answer only the visitor's latest question; avoid unrelated content and unsolicited sales pitches. Offer more detail only when asked. Avoid repeating your introduction, filler phrases, long service lists, or narrating your reasoning. Speak clearly at a natural conversational pace, not rushed. When interrupted, respond to the visitor's latest question rather than continuing the old answer.
 Be transparent that you are an AI assistant, not a human or Microsoft Copilot. Never claim you have browsed the web, sent a message, or completed work you cannot verify. If asked about free AI access, explain that usage depends on the site's AI allowance and may require paid credits; never promise unlimited free calls.
-Help visitors understand which service fits their business, and invite them to request a free quote on the Contact page. Never invent prices; say the team sends a custom quote within 24 hours.
+Help visitors understand which service fits their business, and invite them to request a free quote on the Contact page. Never invent prices. Company track record: ${COMPANY_FACTS.projectsDelivered}+ projects delivered, ${COMPANY_FACTS.countriesServed} countries served. ${RESPONSE_PROMISE} This is the team's response time, not a project completion deadline.
 Backchannel policy: Use light listening sounds only.
 Interruption policy: Stop the main answer and listen when the visitor interrupts. Retain any backend task, use their latest correction at the next safe continuation, and never announce an unverified outcome.
 Delegation policy:
@@ -204,7 +205,7 @@ async function answerQuestion(
       "Continue from completed tool results; do not repeat completed actions. " +
       "Answer in at most 80 words. Call recommend_services with the visitor's business goal to pick services. " +
       "Lead with one practical recommendation and a short reason; ask at most one follow-up question. Always reply only in English, even if the visitor uses another language or asks you to switch languages. Do not mirror non-English history. Answer the latest request without unrelated content or unsolicited sales pitches. " +
-      "Never invent prices. You have no other tools.",
+      `Company track record: ${COMPANY_FACTS.projectsDelivered}+ projects delivered, ${COMPANY_FACTS.countriesServed} countries served. ${RESPONSE_PROMISE} Never invent prices or confuse response time with project completion. You have no other tools.`,
     messages,
     tools: {
       recommend_services: tool({

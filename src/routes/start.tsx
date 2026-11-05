@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, CheckCircle2, Rocket, Target, LineChart, Star } from "lucide-react";
 import { services } from "@/components/services-data";
+import { COMPANY_FACTS, RESPONSE_PROMISE } from "@/lib/company-facts";
 
 export const Route = createFileRoute("/start")({
   head: () => ({
@@ -8,9 +9,9 @@ export const Route = createFileRoute("/start")({
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { title: "Grow Your Business Online — Bitfarm" },
-      { name: "description", content: "Get a website, marketing and data plan built for growth. Free consultation and custom quote within 24 hours." },
+      { name: "description", content: `Get a website, marketing and data plan built for growth. Free consultation and custom quote. ${RESPONSE_PROMISE}` },
       { property: "og:title", content: "Grow Your Business Online — Bitfarm" },
-      { property: "og:description", content: "Free growth consultation and custom quote within 24 hours." },
+      { property: "og:description", content: `Free growth consultation and custom quote. ${RESPONSE_PROMISE}` },
     ],
   }),
   component: Landing,
@@ -36,7 +37,7 @@ function Landing() {
   return (
     <>
       <section className="mx-auto max-w-6xl px-6 py-20 text-center md:py-28">
-        <span className="rounded-full border border-border bg-card/60 px-4 py-1.5 text-xs text-accent">Free growth consultation · Reply in 24h</span>
+        <span className="rounded-full border border-border bg-card/60 px-4 py-1.5 text-xs text-accent">Free growth consultation · Reply within {COMPANY_FACTS.maximumResponseHours}h maximum</span>
         <h1 className="hero-3d mx-auto mt-6 max-w-4xl text-4xl font-bold leading-tight md:text-7xl">
           Turn your business into a <span className="text-gradient">growth machine</span>
         </h1>
@@ -48,7 +49,7 @@ function Landing() {
           <Link to="/services" className="btn-ghost">See all services</Link>
         </div>
         <div className="mt-8 flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-muted-foreground">
-          {["No hidden costs", "Clients in 25+ countries", "Ongoing support"].map((x) => (
+          {["No hidden costs", `Clients in ${COMPANY_FACTS.countriesServed} countries`, "Ongoing support"].map((x) => (
             <span key={x} className="flex items-center gap-1.5"><CheckCircle2 size={16} className="text-accent" />{x}</span>
           ))}
         </div>

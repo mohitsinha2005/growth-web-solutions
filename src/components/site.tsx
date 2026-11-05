@@ -4,6 +4,7 @@ import logo from "@/assets/bitfarm-logo.png";
 import { Menu, X } from "lucide-react";
 import { COMPANY_NAME, CONTACT_EMAIL } from "@/lib/customer-contact";
 import { Button } from "@/components/ui/button";
+import { RESPONSE_PROMISE } from "@/lib/company-facts";
 
 export const BRAND = COMPANY_NAME;
 
@@ -83,7 +84,7 @@ export function CTA() {
       <div className="bg-glow rounded-3xl border border-border bg-card/85 p-10 text-center md:p-16">
         <h2 className="text-3xl font-bold md:text-5xl">Ready to grow your business?</h2>
         <p className="mx-auto mt-4 max-w-xl text-muted-foreground">
-          Tell us about your goals. We'll reply within 24 hours with a clear plan and price.
+          Tell us about your goals for a clear plan and price. {RESPONSE_PROMISE}
         </p>
         <Link to="/contact" className="btn-primary mt-8">Start your project →</Link>
       </div>

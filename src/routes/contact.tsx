@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Mail, MessageCircle, ArrowUpRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CONTACT_EMAIL, openCustomerChat } from "@/lib/customer-contact";
+import { RESPONSE_PROMISE } from "@/lib/company-facts";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
@@ -12,7 +13,7 @@ export const Route = createFileRoute("/contact")({
       { title: "Contact — Bitfarm" },
       { name: "description", content: "Get a free quote for your website, marketing or analytics project." },
       { property: "og:title", content: "Contact — Bitfarm" },
-      { property: "og:description", content: "Tell us about your project and get a free quote within 24 hours." },
+      { property: "og:description", content: `Tell us about your project and get a free quote. ${RESPONSE_PROMISE}` },
     ],
   }),
   component: Contact,
@@ -26,7 +27,7 @@ function Contact() {
     <section className="bg-glow mx-auto grid max-w-6xl gap-12 px-6 py-20 md:grid-cols-2">
       <div>
         <h1 className="hero-3d text-4xl font-bold md:text-6xl">Let's <span className="text-gradient">talk</span></h1>
-        <p className="mt-4 text-lg text-muted-foreground">Share your goals and we'll send a free plan and quote within 24 hours.</p>
+        <p className="mt-4 text-lg text-muted-foreground">Share your goals for a free plan and custom quote. {RESPONSE_PROMISE}</p>
         <ul className="mt-8 space-y-4">
           <li><p className="text-sm text-muted-foreground">Email</p><a href={`mailto:${CONTACT_EMAIL}`} className="break-all font-semibold text-accent hover:underline">{CONTACT_EMAIL}</a></li>
           <li><p className="text-sm text-muted-foreground">Clients</p><p className="font-semibold">Worldwide, all time zones</p></li>

@@ -1,4 +1,6 @@
 # Tasks
+- [x] Fix video and poster delivery with absolute hosted asset URLs; preview playback and corrected URLs on bitfarm.in both play successfully. External deployment still needs updating by the owner.
+- [x] Update to 112+ projects, 21 countries and maximum four-hour responses across pages and Nova; twelve targeted tests pass.
 - [x] Set typed, spoken and delegated replies to English-only and focused; nine tests pass. Actual reply verification remains blocked by the existing unavailable AI provider; audible voice is still unverified.
 - [x] Clean up Nova’s chat and voice controls, add editable client enquiry email drafts, and subtle reduced-motion-safe 2D effects; verified editing, destination, compact layout and eleven tests.
 - [ ] Restore real AI replies: existing chat provider’s OPENAI_API_KEY is missing; live test returned no reply. Provider configuration needs restoring before spoken AI replies can be verified.

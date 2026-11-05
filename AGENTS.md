@@ -15,3 +15,5 @@
 - Use CSS perspective for the entry screen's decorative growth columns, keeping its short animation lightweight and respecting reduced-motion preferences.
 - Keep customer contact details and the contact-to-assistant event in one browser-safe module so every email action and chat entry uses the same destination.
 - Generate client enquiry drafts from user turns in the shared contact module; require an editable preview and the visitor’s email app to send, so drafting never implies delivery.
+- Keep company metrics and response commitments in the browser-safe company-facts module so pages and assistant instructions share the same values.
+- Resolve company-profile media pointers against the Lovable-hosted site rather than the current origin so externally hosted copies can play the CDN assets.

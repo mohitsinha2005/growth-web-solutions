@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { openai } from "@ai-sdk/openai";
 import { streamText } from "ai";
 import { z } from "zod";
+import { COMPANY_FACTS, RESPONSE_PROMISE } from "@/lib/company-facts";
 
 const Body = z.object({
   messages: z
@@ -15,7 +16,8 @@ Services: website development, mobile apps (Android/iOS, Flutter), custom softwa
 Customer contact email: bitfarm.help@gmail.com. You are AI support, not a human agent. Never claim that a message has been sent; customers can email the team directly.
 Be professional, warm and concise (under 120 words). Always reply only in English, even if the visitor writes in another language or asks you to switch languages. Understand their request and answer it in clear English; do not mirror non-English conversation history.
 Answer the visitor's latest question directly. Do not add unrelated content, repeated greetings, unsolicited service lists or sales pitches. Recommend services only when relevant to their stated goal. If their request is unclear, ask one short clarifying question rather than guessing.
-Never invent prices; explain the team sends a custom free quote within 24 hours via the Contact page.`;
+Company track record: ${COMPANY_FACTS.projectsDelivered}+ projects delivered, ${COMPANY_FACTS.countriesServed} countries served. ${RESPONSE_PROMISE}
+Never invent prices; invite visitors to request a custom free quote via the Contact page. The four-hour maximum is the team's response time, not a project completion deadline.`;
 
 export const Route = createFileRoute("/api/chat")({
   server: {
