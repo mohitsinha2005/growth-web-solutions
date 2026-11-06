@@ -26,8 +26,8 @@ export const Route = createFileRoute("/api/chat")({
         const parsed = Body.safeParse(await request.json().catch(() => null));
         if (!parsed.success) return Response.json({ error: "Invalid request" }, { status: 400 });
         // Prefer Lovable AI Gateway; fall back to a host-injected OpenAI key (e.g. Netlify) on external copies.
-        const lovableKey = process.env.LOVABLE_API_KEY;
-        const hasOpenAI = Boolean(process.env.OPENAI_API_KEY);
+        const lovableKey = process.env["LOVABLE_API_KEY"];
+        const hasOpenAI = Boolean(process.env["OPENAI_API_KEY"]);
         if (!lovableKey && !hasOpenAI) {
           return Response.json({ error: "The AI assistant is not configured on this website yet." }, { status: 503 });
         }
