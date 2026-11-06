@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { openai } from "@ai-sdk/openai";
+import { createOpenAI, openai } from "@ai-sdk/openai";
 import { streamText } from "ai";
 import { z } from "zod";
 import { COMPANY_FACTS, RESPONSE_PROMISE } from "@/lib/company-facts";
@@ -25,16 +25,69 @@ export const Route = createFileRoute("/api/chat")({
       POST: async ({ request }) => {
         const parsed = Body.safeParse(await request.json().catch(() => null));
         if (!parsed.success) return Response.json({ error: "Invalid request" }, { status: 400 });
-        // Netlify AI Gateway injects OPENAI_API_KEY and OPENAI_BASE_URL at runtime.
+        // Prefer Lovable AI Gateway; fall back to a host-injected OpenAI key (e.g. Netlify) on external copies.
+        const lovableKey = process.env.LOVABLE_API_KEY;
+        const hasOpenAI = Boolean(process.env.OPENAI_API_KEY);
+        if (!lovableKey && !hasOpenAI) {
+          return Response.json({ error: "The AI assistant is not configured on this website yet." }, { status: 503 });
+        }
+        let model;
+        let providerOptions: Record<string, Record<string, unknown>>;
+        if (lovableKey) {
+          const lovable = createOpenAI({
+            baseURL: "https://ai.gateway.lovable.dev/v1",
+            apiKey: lovableKey,
+            headers: { "Lovable-API-Key": lovableKey, "X-Lovable-AIG-SDK": "vercel-ai-sdk" },
+          });
+          model = lovable.responses("openai/gpt-6-astra");
+          providerOptions = {
+            openai: { forceReasoning: true, reasoningEffort: "low", store: false, include: ["reasoning.encrypted_content"] },
+          };
+        } else {
+          model = openai.responses("gpt-5.4-mini");
+          providerOptions = { openai: { store: false } };
+        }
+        let failure: string | null = null;
         const result = streamText({
-          model: openai.responses("gpt-5.4-mini"),
+          model,
           system: SYSTEM,
           messages: parsed.data.messages,
           abortSignal: request.signal,
-          providerOptions: { openai: { store: false } },
-          onError: ({ error }) => console.error("Chat stream failed", error),
+          maxRetries: 0,
+          providerOptions: providerOptions as never,
+          onError: ({ error }) => {
+            console.error("Chat stream failed", error);
+            const status = (error as { statusCode?: number })?.statusCode;
+            failure =
+              status === 402 || status === 403
+                ? "Nova has reached its AI usage limit. Please email bitfarm.help@gmail.com and our team will help you."
+                : status === 429
+                  ? "Nova is busy right now. Please try again in a moment."
+                  : "Nova couldn't answer just now. Please try again.";
+          },
         });
-        return result.toTextStreamResponse();
+        // Surface a clear message instead of an empty reply when the AI call fails.
+        const encoder = new TextEncoder();
+        const stream = new ReadableStream<Uint8Array>({
+          async start(controller) {
+            let sent = false;
+            try {
+              for await (const chunk of result.textStream) {
+                if (chunk) {
+                  sent = true;
+                  controller.enqueue(encoder.encode(chunk));
+                }
+              }
+            } catch (error) {
+              console.error("Chat stream error", error);
+            }
+            if (!sent) controller.enqueue(encoder.encode(failure ?? "Nova couldn't answer just now. Please try again."));
+            controller.close();
+          },
+        });
+        return new Response(stream, {
+          headers: { "Content-Type": "text/plain; charset=utf-8", "Cache-Control": "no-cache, no-transform" },
+        });
       },
     },
   },

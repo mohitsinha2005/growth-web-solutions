@@ -17,3 +17,4 @@
 - Generate client enquiry drafts from user turns in the shared contact module; require an editable preview and the visitor’s email app to send, so drafting never implies delivery.
 - Keep company metrics and response commitments in the browser-safe company-facts module so pages and assistant instructions share the same values.
 - Resolve company-profile media pointers against the Lovable-hosted site rather than the current origin so externally hosted copies can play the CDN assets.
+- Typed chat (/api/chat) uses Lovable AI Gateway when LOVABLE_API_KEY exists and falls back to a host-injected OPENAI_API_KEY only on external copies; it always streams a readable message instead of an empty reply so visitors never see a silent failure.
