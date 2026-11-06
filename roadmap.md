@@ -1,5 +1,5 @@
 # Tasks
-- [ ] Clean up Bitfarm’s presentation, simplify motion, and verify pages and video on desktop and mobile.
+- [x] Clean up Bitfarm’s presentation with clearer headings, neutral surfaces, flatter cards, simpler motion, and a dedicated company video section; five tests pass, all pages fit, video plays, and mobile navigation/chat open without errors.
 - [x] Fix video and poster delivery with absolute hosted asset URLs; preview playback and corrected URLs on bitfarm.in both play successfully. External deployment still needs updating by the owner.
 - [x] Update to 112+ projects, 21 countries and maximum four-hour responses across pages and Nova; twelve targeted tests pass.
 - [x] Set typed, spoken and delegated replies to English-only and focused; nine tests pass. Actual reply verification remains blocked by the existing unavailable AI provider; audible voice is still unverified.

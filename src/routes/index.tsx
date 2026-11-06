@@ -2,6 +2,9 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { CTA, services } from "@/components/site";
 import { Showreel } from "@/components/Showreel";
 import { COMPANY_FACTS, RESPONSE_PROMISE } from "@/lib/company-facts";
+import { Button } from "@/components/ui/button";
+import { ArrowRight } from "lucide-react";
+import growthBackground from "@/assets/bg-growth.jpg";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -36,32 +39,32 @@ const faqs = [
 function Index() {
   return (
     <>
-      <section className="bg-glow relative isolate overflow-hidden">
-        <div className="mx-auto grid max-w-6xl items-center gap-12 px-6 py-16 md:py-24 lg:grid-cols-2">
+      <section className="home-hero relative isolate overflow-hidden" style={{ "--hero-image": `url(${growthBackground})` } as React.CSSProperties}>
+        <div className="mx-auto max-w-6xl px-6 py-14 md:py-16">
           <div className="max-w-2xl">
-            <span className="rounded-full border border-border px-3 py-1 text-xs text-accent">IT services for businesses worldwide</span>
-            <h1 className="hero-3d mt-6 text-4xl font-bold leading-tight md:text-6xl">
-              Bitfarm <span className="text-gradient">Digital growth, built right.</span>
-            </h1>
-            <p className="mt-6 max-w-lg text-lg text-muted-foreground">
+            <p className="text-xs font-semibold uppercase tracking-widest text-accent">Technology · Marketing · Data</p>
+            <h1 className="hero-3d mt-5 text-5xl font-bold leading-tight md:text-7xl">Bitfarm</h1>
+            <p className="mt-3 font-display text-2xl font-semibold md:text-3xl">Digital growth, built right.</p>
+            <p className="mt-5 max-w-lg text-base leading-relaxed text-muted-foreground md:text-lg">
               Professional websites, digital marketing and data analytics — one team, one plan, real results.
             </p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Link to="/contact" className="btn-primary">Get a free quote →</Link>
-              <Link to="/services" className="btn-ghost">Our services</Link>
+            <div className="mt-7 flex flex-wrap gap-3">
+              <Button asChild className="h-12 px-6"><Link to="/contact">Get a free quote <ArrowRight /></Link></Button>
+              <Button asChild variant="outline" className="h-12 px-6"><Link to="/services">Our services</Link></Button>
             </div>
           </div>
-          <Showreel compact />
         </div>
       </section>
 
       <section className="border-y border-border bg-surface/70">
-        <div className="mx-auto grid max-w-6xl grid-cols-2 gap-6 px-6 py-10 md:grid-cols-4">
+        <div className="mx-auto grid max-w-6xl grid-cols-2 gap-6 px-6 py-7 md:grid-cols-4">
           {stats.map(([n, l]) => (
-            <div key={l}><p className="font-display text-3xl font-bold text-primary">{n}</p><p className="text-sm text-muted-foreground">{l}</p></div>
+            <div key={l}><p className="font-display text-2xl font-bold text-foreground">{n}</p><p className="mt-1 text-xs text-muted-foreground md:text-sm">{l}</p></div>
           ))}
         </div>
       </section>
+
+      <Showreel />
 
       <section className="mx-auto max-w-6xl px-6 py-20">
         <h2 className="text-3xl font-bold md:text-4xl">Everything you need to grow online</h2>
@@ -74,7 +77,7 @@ function Index() {
             </div>
           ))}
         </div>
-        <Link to="/services" className="btn-ghost mt-8">View all 12 services →</Link>
+        <Button asChild variant="outline" className="mt-8 h-11"><Link to="/services">View all 12 services <ArrowRight /></Link></Button>
       </section>
 
       <section className="mx-auto max-w-6xl px-6 pb-10">
@@ -94,16 +97,16 @@ function Index() {
         <h2 className="text-3xl font-bold md:text-4xl">Industries we serve</h2>
         <div className="mt-8 flex flex-wrap gap-3">
           {industries.map((i) => (
-            <span key={i} className="chip-3d rounded-full border border-border bg-card/70 px-4 py-2 text-sm">{i}</span>
+            <span key={i} className="chip-3d border-b border-border px-1 py-3 text-sm">{i}</span>
           ))}
         </div>
       </section>
 
       <section className="mx-auto max-w-3xl px-6 pb-20">
         <h2 className="text-3xl font-bold md:text-4xl">Frequently asked questions</h2>
-        <div className="mt-8 space-y-3">
+        <div className="mt-8 divide-y divide-border border-y border-border">
           {faqs.map(([q, a]) => (
-            <details key={q} className="faq card-lift p-5">
+            <details key={q} className="faq py-5">
               <summary className="font-semibold">{q}</summary>
               <p className="mt-3 text-muted-foreground">{a}</p>
             </details>

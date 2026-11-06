@@ -19,7 +19,7 @@ export const Route = createFileRoute("/contact")({
   component: Contact,
 });
 
-const field = "w-full rounded-xl border border-input bg-secondary px-4 py-3 outline-none focus:border-primary";
+const field = "w-full rounded-md border border-input bg-secondary px-4 py-3 outline-none focus:border-primary";
 
 function Contact() {
   const [sent, setSent] = useState(false);
@@ -42,7 +42,7 @@ function Contact() {
           <a href={`mailto:${CONTACT_EMAIL}`} className="flex items-center gap-3 border-b border-border py-4 font-semibold text-accent hover:text-foreground"><Mail className="h-5 w-5" />Email our team<ArrowUpRight className="ml-auto h-5 w-5" /></a>
         </div>
       </div>
-      <div className="rounded-3xl border border-border bg-card p-8">
+      <div className="rounded-lg border border-border bg-card p-6 md:p-8">
         {sent ? (
           <div className="py-16 text-center">
             <p className="text-4xl">✓</p>

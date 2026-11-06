@@ -50,7 +50,6 @@ export function Background3D() {
         <img src={bg} alt="" width={1920} height={1088} className="h-full w-full object-cover" />
       </div>
       <div className="bg-overlay absolute inset-0" />
-      <div className="bg-gridlines absolute inset-0" />
     </div>
   );
 }

@@ -60,8 +60,8 @@ export function Showreel({ compact = false }: { compact?: boolean }) {
   return (
     <section className={compact ? "w-full" : "mx-auto max-w-6xl px-6 py-20"}>
       {!compact && <div className="mx-auto max-w-2xl text-center">
-        <span className="rounded-full border border-border px-3 py-1 text-xs text-accent">Company profile</span>
-        <h2 className="mt-4 text-3xl font-bold md:text-4xl">See Bitfarm in action</h2>
+        <span className="text-xs font-semibold uppercase tracking-widest text-accent">Company profile</span>
+        <h2 className="mt-4 text-3xl font-bold md:text-4xl">Meet Bitfarm</h2>
         <p className="mt-3 text-muted-foreground">
           A short film about who we are, what we build and how we help businesses grow.
         </p>

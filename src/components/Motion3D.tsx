@@ -17,7 +17,7 @@ export function Motion3D() {
         const y = (e.clientY - r.top) / r.height - 0.5;
         cancelAnimationFrame(frame);
         frame = requestAnimationFrame(() => {
-          el.style.transform = `perspective(1200px) rotateX(${-y * 5}deg) rotateY(${x * 6}deg) translateY(-3px)`;
+           el.style.transform = `perspective(1200px) rotateX(${-y * 1.5}deg) rotateY(${x * 2}deg) translateY(-2px)`;
         });
       };
       const leave = () => { cancelAnimationFrame(frame); el.style.transform = ""; };
